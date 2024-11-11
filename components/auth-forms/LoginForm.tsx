@@ -13,7 +13,7 @@ import { GoogleLoginButton } from './GoogleLoginButton';
 
 const loginUserSchema = z.object({
 	email: z.string().email({ message: 'Email is invalid' }),
-	password: z.string().min(10, { message: 'Password must be at least 10 characters long' }),
+	password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
 });
 
 export const LoginForm = () => {
