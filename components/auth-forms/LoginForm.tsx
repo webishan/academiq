@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
+import { CustomToast } from '../common/Toast';
 
 const loginUserSchema = z.object({
 	email: z.string().email({ message: 'Email is invalid' }),
@@ -29,8 +30,7 @@ export const LoginForm = () => {
 
 	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof loginUserSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
+		CustomToast.success('Test');
 		console.log(values);
 	}
 	return (
