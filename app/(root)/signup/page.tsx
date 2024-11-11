@@ -1,7 +1,16 @@
-import React from 'react';
+import { SignUpForm } from '@/components/auth-forms/SignUpForm';
+import Link from 'next/link';
 
 const SignUp = () => {
-  return <div>SignUp Page</div>;
+	return (
+		<div className="flex flex-col min-h-screen items-center justify-center">
+			<h1 className="mb-2 text-center text-2xl font-bold">Create Account</h1>
+			<p className="mb-8 text-center">
+				Already have an account? <Link href="/login">Log in</Link>
+			</p>
+			<SignUpForm />
+		</div>
+	);
 };
 
 export default SignUp;
