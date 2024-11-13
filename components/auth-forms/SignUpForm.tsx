@@ -13,6 +13,7 @@ import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
 import { CustomToast } from '../common/Toast';
+import { useRouter } from 'next/navigation';
 
 const signupUserSchema = z
 	.object({
@@ -44,6 +45,8 @@ const signupUserSchema = z
 
 export const SignUpForm = () => {
 	const [isExecuting, setIsExecuting] = useState(false);
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof signupUserSchema>>({
 		resolver: zodResolver(signupUserSchema),
 		defaultValues: {
@@ -76,6 +79,7 @@ export const SignUpForm = () => {
 
 			if (res.ok) {
 				CustomToast.success(data.message);
+				router.push('/login');
 			} else {
 				const errorMessage = data.error || 'An unexpected error occurred';
 				CustomToast.error(errorMessage);
