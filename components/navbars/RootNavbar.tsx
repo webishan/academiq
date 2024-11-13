@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { FiAlignRight } from 'react-icons/fi';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import LogoutButton from '../auth-forms/LogoutButton';
 import LinkButton from '../common/LinkButton';
 

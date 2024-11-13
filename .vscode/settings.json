@@ -1,4 +1,12 @@
 {
   "prettier.endOfLine": "lf",
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": false,
+  "editor.formatOnSave": true,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": true,
+  "prettier.bracketSpacing": true
 }
