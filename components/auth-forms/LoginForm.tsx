@@ -10,6 +10,9 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
+import { CustomToast } from '../common/Toast';
+import { loginWithCredentials } from '@/actions/auth-actions/authAction';
+import { useRouter } from 'next/navigation';
 
 const loginUserSchema = z.object({
 	email: z.string().email({ message: 'Email is invalid' }),
@@ -18,6 +21,8 @@ const loginUserSchema = z.object({
 
 export const LoginForm = () => {
 	const [isExecuting, setIsExecuting] = useState(false);
+	const router = useRouter();
+
 	const form = useForm({
 		resolver: zodResolver(loginUserSchema),
 		defaultValues: {
@@ -28,11 +33,29 @@ export const LoginForm = () => {
 	});
 
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof loginUserSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
-		console.log(values);
-	}
+	const onSubmit = async (values: z.infer<typeof loginUserSchema>) => {
+		setIsExecuting(true);
+
+		try {
+			const formData = new FormData();
+			formData.append('email', values.email);
+			formData.append('password', values.password);
+
+			const result = await loginWithCredentials(formData);
+
+			if (result?.error) {
+				CustomToast.error(result.error);
+				return;
+			} else {
+				CustomToast.success('Logged in successfully');
+				router.push('/');
+			}
+		} catch (error: any) {
+			CustomToast.error(error.message || 'An unexpected error occurred from frontend catch block');
+		} finally {
+			setIsExecuting(false);
+		}
+	};
 	return (
 		<div className="w-[50%]">
 			<Form {...form}>
@@ -57,7 +80,7 @@ export const LoginForm = () => {
 					</div>
 					<div className="flex flex-row justify-between gap-2">
 						<Button type="submit" className="w-full" disabled={isExecuting || !form.formState.isValid}>
-							Log In
+							{isExecuting ? 'Logging in...' : 'Log In'}
 						</Button>
 						<GoogleLoginButton />
 					</div>
