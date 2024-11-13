@@ -51,7 +51,8 @@ export const loginWithCredentials = async (formData: FormData) => {
 				default:
 					// console.log(error.type);
 					// console.log(error.message);
-					return { error: 'Invalid credentials!' };
+					// return { error: 'Invalid credentials!' };
+					return { error: error.message };
 			}
 		}
 		throw error;

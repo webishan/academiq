@@ -12,10 +12,11 @@ import { Check, X } from 'lucide-react';
 import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
+import { CustomToast } from '../common/Toast';
 
 const signupUserSchema = z
 	.object({
-		fullName: z.string().min(2, {
+		name: z.string().min(2, {
 			message: 'Full Name must be at least 2 characters.',
 		}),
 		email: z.string().email({
@@ -46,7 +47,7 @@ export const SignUpForm = () => {
 	const form = useForm<z.infer<typeof signupUserSchema>>({
 		resolver: zodResolver(signupUserSchema),
 		defaultValues: {
-			fullName: '',
+			name: '',
 			email: '',
 			password: '',
 			confirmPassword: '',
@@ -54,12 +55,37 @@ export const SignUpForm = () => {
 		mode: 'onChange',
 	});
 
-	// on submit
-	function onSubmit(values: z.infer<typeof signupUserSchema>) {
-		// Do something with the form values.
-		// ✅ This will be type-safe and validated.
+	const onSubmit = async (values: z.infer<typeof signupUserSchema>) => {
 		console.log(values);
-	}
+		setIsExecuting(true);
+
+		try {
+			const res = await fetch('/api/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					name: values.name,
+					email: values.email,
+					password: values.password,
+				}),
+			});
+
+			const data = await res.json();
+
+			if (res.ok) {
+				CustomToast.success(data.message);
+			} else {
+				const errorMessage = data.error || 'An unexpected error occurred';
+				CustomToast.error(errorMessage);
+			}
+		} catch (error: any) {
+			CustomToast.error(error.message || 'An unexpected error occurred from frontend catch block');
+		} finally {
+			setIsExecuting(false);
+		}
+	};
 
 	const passwordValue = form.watch('password');
 	const confirmPasswordValue = form.watch('confirmPassword');
@@ -78,7 +104,7 @@ export const SignUpForm = () => {
 					<div className="h-[80px]">
 						<FormField
 							control={form.control}
-							name="fullName"
+							name="name"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Full Name</FormLabel>
