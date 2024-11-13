@@ -155,7 +155,7 @@ export const SignUpForm = () => {
 								<TooltipTrigger asChild>
 									<div className="w-full">
 										<Button type="submit" className="w-full" disabled={isExecuting || !form.formState.isDirty || !form.formState.isValid}>
-											Sign Up
+											{isExecuting ? 'Creating account...' : 'Create Account'}
 										</Button>
 									</div>
 								</TooltipTrigger>
