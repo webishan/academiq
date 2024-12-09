@@ -25,7 +25,7 @@ model User {
   name          String
   email         String          @unique
   emailVerified DateTime?
-  hashedPassword String
+  hashedPassword String?
   image         String?
   role          UserRole        @default(STUDENT)
   accounts      Account[]
