@@ -23,19 +23,122 @@ enum UserRole {
 model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  email         String         @unique
+  email         String          @unique
   emailVerified DateTime?
   hashedPassword String
   image         String?
-  role         UserRole?
+  role          UserRole        @default(STUDENT)
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  posts         Post[]
+  comments      Comment[]
+  postVotes     PostVote[]
+  commentVotes  CommentVote[]
+  bookmarks     Bookmark[]
+  reports       Report[]        // User reports
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
+
+model Post {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  body          String
+  link          String?
+  courseTag     String
+  hasMaterial   Boolean         @default(false)
+  hasLink       Boolean         @default(false)
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  comments      Comment[]
+  votes         PostVote[]
+  bookmarks     Bookmark[]
+  postTags      PostTag[]
+  reports       Report[]        // Reports related to the post
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model Comment {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  body          String
+  postId        String          @db.ObjectId
+  post          Post            @relation(fields: [postId], references: [id])
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  parentId      String?         @db.ObjectId
+  parent        Comment?        @relation("CommentThread", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children      Comment[]       @relation("CommentThread")
+  votes         CommentVote[]
+  reports       Report[]        // Reports related to the comment
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model PostVote {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  postId        String          @db.ObjectId
+  post          Post            @relation(fields: [postId], references: [id])
+  value         Int             // 1 for upvote, -1 for downvote
+
+  createdAt     DateTime        @default(now())
+}
+
+model CommentVote {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  commentId     String          @db.ObjectId
+  comment       Comment         @relation(fields: [commentId], references: [id])
+  value         Int             // 1 for upvote, -1 for downvote
+
+  createdAt     DateTime        @default(now())
+}
+
+model Tag {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String          @unique
+  postTags      PostTag[]
+}
+
+model PostTag {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  postId        String          @db.ObjectId
+  post          Post            @relation(fields: [postId], references: [id])
+  tagId         String          @db.ObjectId
+  tag           Tag             @relation(fields: [tagId], references: [id])
+}
+
+model Bookmark {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  postId        String          @db.ObjectId
+  post          Post            @relation(fields: [postId], references: [id])
+
+  createdAt     DateTime        @default(now())
+}
+
+model Report {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  postId        String?         @db.ObjectId
+  post          Post?           @relation(fields: [postId], references: [id])
+  commentId     String?         @db.ObjectId
+  comment       Comment?        @relation(fields: [commentId], references: [id])
+  userId        String          @db.ObjectId
+  user          User            @relation(fields: [userId], references: [id])
+  reason        String
+
+  createdAt     DateTime        @default(now())
+}
+
+// Below for other purposes.
  
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
