@@ -6,6 +6,7 @@ import { FiAlignRight } from 'react-icons/fi';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import LogoutButton from '../auth-forms/LogoutButton';
 import LinkButton from '../common/LinkButton';
+import CreatePostButton from './CreatePostButton';
 
 export const RootNavbar = async () => {
 	const session = await auth();
@@ -18,6 +19,7 @@ export const RootNavbar = async () => {
 				{session?.user ? (
 					<div className="hidden gap-2 md:flex items-center justify-center">
 						<div className="mr-4">Welcome, {session?.user?.name}</div>
+						<CreatePostButton />
 						<LinkButton href="/profile" variant="outline">
 							Profile
 						</LinkButton>
