@@ -48,18 +48,20 @@ model Post {
   body          String
   link          String?
   courseTag     String
-  hasMaterial   Boolean         @default(false)
-  hasLink       Boolean         @default(false)
-  userId        String          @db.ObjectId
-  user          User            @relation(fields: [userId], references: [id])
+  images        String[]      // Optional array of image URLs
+  files         String[]      // Optional array of PDF URLs
+  topicTags     String[]      // Array of topic tags
+  hasMaterial   Boolean        @default(false)
+  hasLink       Boolean        @default(false)
+  userId        String         @db.ObjectId
+  user          User           @relation(fields: [userId], references: [id])
   comments      Comment[]
   votes         PostVote[]
   bookmarks     Bookmark[]
-  postTags      PostTag[]
-  reports       Report[]        // Reports related to the post
+  reports       Report[]       
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Comment {
@@ -101,19 +103,6 @@ model CommentVote {
   createdAt     DateTime        @default(now())
 }
 
-model Tag {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  name          String          @unique
-  postTags      PostTag[]
-}
-
-model PostTag {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  postId        String          @db.ObjectId
-  post          Post            @relation(fields: [postId], references: [id])
-  tagId         String          @db.ObjectId
-  tag           Tag             @relation(fields: [tagId], references: [id])
-}
 
 model Bookmark {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
