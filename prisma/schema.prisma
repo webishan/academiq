@@ -46,12 +46,11 @@ model Post {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   body          String
-  link          String?
-  courseTag     String
-  materials   String[] // URLs for images, PDFs, etc.
-  topicTags     String[]      // Array of topic tags
+  courseCode     String
+  materials     String[] 			// URLs for images, PDFs, etc.
+  topics     String[]      // Array of topic tags
   hasMaterial   Boolean        @default(false)
-  hasLink       Boolean        @default(false)
+  hasLink       Boolean        
   userId        String         @db.ObjectId
   user          User           @relation(fields: [userId], references: [id])
   comments      Comment[]
