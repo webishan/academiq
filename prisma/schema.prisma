@@ -48,8 +48,7 @@ model Post {
   body          String
   link          String?
   courseTag     String
-  images        String[]      // Optional array of image URLs
-  files         String[]      // Optional array of PDF URLs
+  materials   String[] // URLs for images, PDFs, etc.
   topicTags     String[]      // Array of topic tags
   hasMaterial   Boolean        @default(false)
   hasLink       Boolean        @default(false)
