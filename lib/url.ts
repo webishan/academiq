@@ -1,8 +1,13 @@
 export function stringifyQueryParams(queryParams: Record<string, unknown>) {
-	return Object.entries(queryParams)
-		.filter(([_, value]) => value !== null && value !== undefined)
-		.map(([key, value]) => (value instanceof Date ? `${key}=${value.getTime()}` : `${key}=${encodeURIComponent(value as string)}`))
-		.join('&');
+	const params = new URLSearchParams();
+
+	Object.entries(queryParams).forEach(([key, value]) => {
+		if (value !== null && value !== undefined && value !== '') {
+			params.set(key, String(value));
+		}
+	});
+
+	return params.toString();
 }
 
 export function isUrl(value: string) {
