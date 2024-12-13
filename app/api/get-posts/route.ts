@@ -1,9 +1,22 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
-export const GET = async (request: Request) => {
+export async function GET(request: Request) {
 	try {
+		const { searchParams } = new URL(request.url);
+		const query = searchParams.get('q');
+
 		const posts = await db.post.findMany({
+			where: query
+				? {
+						OR: [
+							{ title: { contains: query, mode: 'insensitive' } },
+							{ body: { contains: query, mode: 'insensitive' } },
+							{ courseCode: { contains: query, mode: 'insensitive' } },
+							{ user: { name: { contains: query, mode: 'insensitive' } } },
+						],
+					}
+				: {},
 			include: {
 				user: {
 					select: {
@@ -29,4 +42,4 @@ export const GET = async (request: Request) => {
 		console.error('Error fetching posts:', error);
 		return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
 	}
-};
+}

@@ -1,9 +1,17 @@
 import PostCard from '@/components/homepage/PostCard';
 import { PostWithUser } from '@/types/types';
 
-async function getPosts() {
+interface SearchParams {
+	q?: string;
+}
+
+async function getPosts(searchParams: SearchParams) {
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/get-posts`, {
+		const queryString = new URLSearchParams({
+			...(searchParams.q && { q: searchParams.q }),
+		}).toString();
+
+		const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/get-posts${queryString ? `?${queryString}` : ''}`, {
 			cache: 'no-store',
 		});
 
@@ -18,12 +26,12 @@ async function getPosts() {
 	}
 }
 
-export default async function Home() {
-	const posts = await getPosts();
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+	const posts = await getPosts(searchParams);
 
 	return (
 		<main className="container mx-auto py-8 px-4">
-			<h1 className="text-3xl font-bold mb-8">Recent Posts</h1>
+			<h1 className="text-3xl font-bold mb-8">{searchParams.q ? `Search Results for "${searchParams.q}"` : 'Recent Posts'}</h1>
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 				{posts.map((post: PostWithUser) => (
 					<PostCard key={post.id} post={post} />
