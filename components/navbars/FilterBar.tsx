@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '../ui/button';
 import { DateRange } from 'react-day-picker';
-import { addDays } from 'date-fns';
 import { DatePickerWithRange } from '../ui/date-range-picker';
 const FilterBar = () => {
 	const router = useRouter();
@@ -34,7 +33,6 @@ const FilterBar = () => {
 	const updateSearchParams = (currentFilters: typeof filters, dateRange: DateRange | undefined) => {
 		const params = new URLSearchParams(searchParams.toString());
 
-		// Update filter params
 		Object.entries(currentFilters).forEach(([key, value]) => {
 			if (value) {
 				params.set(key, 'true');
@@ -43,7 +41,6 @@ const FilterBar = () => {
 			}
 		});
 
-		// Update date params
 		if (dateRange?.from) {
 			params.set('fromDate', dateRange.from.toISOString());
 		} else {

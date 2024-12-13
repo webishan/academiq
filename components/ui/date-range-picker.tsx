@@ -51,7 +51,7 @@ export function DatePickerWithRange({ date, setDate }: DatePickerWithRangeProps)
 						modifiersStyles={{
 							today: {
 								color: 'white',
-								backgroundColor: 'rgb(54, 69, 79)', // green-500
+								backgroundColor: 'rgb(54, 69, 79)',
 								fontWeight: 'bold',
 							},
 						}}

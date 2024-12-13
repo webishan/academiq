@@ -12,7 +12,6 @@ export async function GET(request: Request) {
 
 		const where: any = {};
 
-		// Search query filter
 		if (query) {
 			where.OR = [
 				{ title: { contains: query, mode: 'insensitive' } },
@@ -22,11 +21,9 @@ export async function GET(request: Request) {
 			];
 		}
 
-		// Has link and material filters
 		if (hasLink) where.hasLink = true;
 		if (hasMaterial) where.hasMaterial = true;
 
-		// Date range filter
 		if (fromDate || toDate) {
 			where.createdAt = {};
 			if (fromDate) where.createdAt.gte = new Date(fromDate);

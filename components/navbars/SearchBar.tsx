@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { stringifyQueryParams } from '@/lib/url';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const SearchBar = () => {
