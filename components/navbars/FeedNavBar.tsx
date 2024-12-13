@@ -7,8 +7,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import LinkButton from '../common/LinkButton';
 import CreatePostButton from './CreatePostButton';
 import ProfileButton from './ProfileButton';
+import SearchBar from './SearchBar';
 
-export const RootNavbar = async () => {
+export const FeedNavbar = async () => {
 	const session = await auth();
 	return (
 		<nav className="w-full bg-background shadow-sm flex flex-row items-center justify-center border-b fixed top-0 left-0 right-0 z-50">
@@ -16,6 +17,7 @@ export const RootNavbar = async () => {
 				<Link href="/" className="flex items-center gap-2" prefetch={false}>
 					<span className="font-bold">AcademiQ</span>
 				</Link>
+				<SearchBar />
 				{session?.user ? (
 					<div className="hidden gap-2 md:flex items-center justify-center">
 						<CreatePostButton />
