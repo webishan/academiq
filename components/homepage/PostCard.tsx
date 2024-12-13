@@ -59,3 +59,5 @@ export default function PostCard({ post }: PostCardProps) {
 		</div>
 	);
 }
+
+// TODO: Add a button to view the post in full screen
