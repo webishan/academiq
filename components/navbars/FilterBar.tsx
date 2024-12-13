@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
 const FilterBar = () => {
 	return (
-		<aside className="fixed left-0 top-0 h-screen w-64 bg-background border-r border-border p-4 flex flex-col gap-4">
+		<aside className="fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 bg-background border-r border-border p-4 flex flex-col gap-4 overflow-y-auto">
 			{/* Header Section */}
 			<div className="pb-4 border-b">
 				<h2 className="font-semibold text-lg">Filters</h2>
@@ -31,12 +31,10 @@ const FilterBar = () => {
 
 			{/* Bottom Actions */}
 			<div className="mt-auto pt-4 border-t">
-				<button className="w-full bg-primary text-primary-foreground rounded-md py-2">
-					Apply Filters
-				</button>
+				<button className="w-full bg-primary text-primary-foreground rounded-md py-2">Apply Filters</button>
 			</div>
 		</aside>
-	)
-}
+	);
+};
 
-export default FilterBar
+export default FilterBar;

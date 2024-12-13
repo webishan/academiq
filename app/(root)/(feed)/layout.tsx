@@ -7,9 +7,9 @@ const FeedLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<main className="flex flex-col min-h-screen">
 			<FeedNavbar />
-			<div className="flex flex-row flex-1 pt-16">
+			<div className="flex flex-row pt-16">
 				<FilterBar />
-				<div className="flex-1">{children}</div>
+				<div className="flex-1 ml-64 p-6">{children}</div>
 			</div>
 			<ToastContainer />
 		</main>
