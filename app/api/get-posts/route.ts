@@ -5,18 +5,40 @@ export async function GET(request: Request) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const query = searchParams.get('q');
+		const hasLink = searchParams.get('hasLink') === 'true';
+		const hasMaterial = searchParams.get('hasMaterial') === 'true';
+		const fromDate = searchParams.get('fromDate');
+		const toDate = searchParams.get('toDate');
+
+		const where: any = {};
+
+		// Search query filter
+		if (query) {
+			where.OR = [
+				{ title: { contains: query, mode: 'insensitive' } },
+				{ body: { contains: query, mode: 'insensitive' } },
+				{ courseCode: { contains: query, mode: 'insensitive' } },
+				{ user: { name: { contains: query, mode: 'insensitive' } } },
+			];
+		}
+
+		// Has link and material filters
+		if (hasLink) where.hasLink = true;
+		if (hasMaterial) where.hasMaterial = true;
+
+		// Date range filter
+		if (fromDate || toDate) {
+			where.createdAt = {};
+			if (fromDate) where.createdAt.gte = new Date(fromDate);
+			if (toDate) {
+				const endDate = new Date(toDate);
+				endDate.setHours(23, 59, 59, 999);
+				where.createdAt.lte = endDate;
+			}
+		}
 
 		const posts = await db.post.findMany({
-			where: query
-				? {
-						OR: [
-							{ title: { contains: query, mode: 'insensitive' } },
-							{ body: { contains: query, mode: 'insensitive' } },
-							{ courseCode: { contains: query, mode: 'insensitive' } },
-							{ user: { name: { contains: query, mode: 'insensitive' } } },
-						],
-					}
-				: {},
+			where,
 			include: {
 				user: {
 					select: {

@@ -3,12 +3,20 @@ import { PostWithUser } from '@/types/types';
 
 interface SearchParams {
 	q?: string;
+	hasLink?: string;
+	hasMaterial?: string;
+	fromDate?: string;
+	toDate?: string;
 }
 
 async function getPosts(searchParams: SearchParams) {
 	try {
 		const queryString = new URLSearchParams({
 			...(searchParams.q && { q: searchParams.q }),
+			...(searchParams.hasLink && { hasLink: searchParams.hasLink }),
+			...(searchParams.hasMaterial && { hasMaterial: searchParams.hasMaterial }),
+			...(searchParams.fromDate && { fromDate: searchParams.fromDate }),
+			...(searchParams.toDate && { toDate: searchParams.toDate }),
 		}).toString();
 
 		const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/get-posts${queryString ? `?${queryString}` : ''}`, {
