@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { stringifyQueryParams } from '@/lib/url';
+import { useRouter } from 'next/navigation';
+
 const SearchBar = () => {
 	const [isFocused, setIsFocused] = useState(false);
+	const router = useRouter();
 	return (
 		<div className="relative max-w-md w-full">
 			<div
