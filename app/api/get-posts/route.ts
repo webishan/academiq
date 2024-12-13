@@ -13,11 +13,13 @@ export async function GET(request: Request) {
 		const where: any = {};
 
 		if (query) {
+			const normalizedQuery = query.trim().toLowerCase();
 			where.OR = [
-				{ title: { contains: query, mode: 'insensitive' } },
-				{ body: { contains: query, mode: 'insensitive' } },
-				{ courseCode: { contains: query, mode: 'insensitive' } },
-				{ user: { name: { contains: query, mode: 'insensitive' } } },
+				{ title: { contains: normalizedQuery, mode: 'insensitive' } },
+				{ body: { contains: normalizedQuery, mode: 'insensitive' } },
+				{ courseCode: { contains: normalizedQuery, mode: 'insensitive' } },
+				{ user: { name: { contains: normalizedQuery, mode: 'insensitive' } } },
+				{ topics: { has: normalizedQuery } },
 			];
 		}
 

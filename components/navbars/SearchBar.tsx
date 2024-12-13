@@ -35,7 +35,7 @@ const SearchBar = () => {
 					type="text"
 					value={searchQuery}
 					onChange={(e) => handleSearch(e.target.value)}
-					placeholder="Search by course code, user, title, or description"
+					placeholder="Search by course code, user, title, description, or topics"
 					className="w-full py-2 pl-10 pr-4 text-foreground bg-transparent rounded-full focus:outline-none text-sm"
 					onFocus={() => setIsFocused(true)}
 					onBlur={() => setIsFocused(false)}

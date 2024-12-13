@@ -24,9 +24,12 @@ export async function POST(req: Request) {
 		const title = formData.get('title') as string;
 		const body = formData.get('body') as string;
 		const courseCode = formData.get('courseCode') as string;
-		const topics = JSON.parse(formData.get('topics') as string);
+		const rawTopics = JSON.parse(formData.get('topics') as string);
 		const hasLink = formData.get('hasLink') === 'true';
 		const files = formData.getAll('materials') as File[];
+
+		// Normalize topics: trim whitespace and convert to lowercase
+		const topics = rawTopics.map((topic: string) => topic.trim().toLowerCase());
 
 		// Upload files to Cloudinary
 		const materialUrls = [];

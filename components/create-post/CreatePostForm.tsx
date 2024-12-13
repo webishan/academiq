@@ -22,7 +22,10 @@ const createPostSchema = z.object({
 	topics: z
 		.string()
 		.transform((str) => str.split(',').map((tag) => tag.trim()))
-		.transform((tags) => tags.filter((tag): tag is string => tag.length > 0)),
+		.transform((tags) => tags.filter((tag): tag is string => tag.length > 0))
+		.refine((tags) => tags.every((tag) => !tag.includes(' ')), {
+			message: 'Topics should be single words separated by commas (no spaces in topics)',
+		}),
 	hasLink: z.boolean().default(false),
 	materials: z
 		.array(z.instanceof(File))
@@ -45,6 +48,7 @@ export default function CreatePostForm() {
 			hasLink: false,
 			materials: undefined,
 		},
+		mode: 'onChange',
 	});
 
 	const onSubmit = async (values: z.infer<typeof createPostSchema>) => {
