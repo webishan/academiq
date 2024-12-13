@@ -2,7 +2,10 @@
 
 import { PostWithUser } from '@/types/types';
 import { formatDistanceToNow } from 'date-fns';
-import Link from 'next/link';
+import { Button } from '../ui/button';
+import { BiSolidUpvote } from 'react-icons/bi';
+import { BiSolidDownvote } from 'react-icons/bi';
+import { FaRegComment } from 'react-icons/fa';
 
 interface PostCardProps {
 	post: PostWithUser;
@@ -34,6 +37,24 @@ export default function PostCard({ post }: PostCardProps) {
 			<div className="flex items-center gap-2">
 				{post.hasMaterial && <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">Has attachments</span>}
 				{post.hasLink && <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">Contains links</span>}
+			</div>
+
+			<div className="flex items-center gap-4 mt-4 border-t pt-3">
+				<div className="flex items-center gap-1">
+					<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary">
+						<BiSolidUpvote className="h-5 w-5" />
+					</Button>
+					<span className="text-sm font-medium">{0}</span>
+					<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary">
+						<BiSolidDownvote className="h-5 w-5" />
+					</Button>
+					<span className="text-sm font-medium">{0}</span>
+				</div>
+
+				<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary flex items-center gap-2">
+					<FaRegComment className="h-4 w-4" />
+					<span className="text-sm">{0}</span>
+				</Button>
 			</div>
 		</div>
 	);
