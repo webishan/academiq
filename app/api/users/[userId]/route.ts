@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 
 export async function GET(request: Request, { params }: { params: { userId: string } }) {
 	try {
@@ -51,21 +52,38 @@ export async function PATCH(request: Request, { params }: { params: { userId: st
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		// Security check: Only allow updating own profile
 		if (session.user.id !== params.userId) {
 			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 		}
 
 		const data = await request.json();
 
+		// Prepare update data
+		const updateData: any = {
+			name: data.name,
+			department: data.department,
+			studentId: data.studentId,
+			facultyInitials: data.facultyInitials,
+			facultyPosition: data.facultyPosition,
+		};
+
+		// Handle password update if provided
+		if (data.currentPassword && data.newPassword) {
+			const user = await db.user.findUnique({
+				where: { id: params.userId },
+				select: { hashedPassword: true },
+			});
+
+			if (!user?.hashedPassword || !bcrypt.compareSync(data.currentPassword, user.hashedPassword)) {
+				return NextResponse.json({ error: 'Current password is incorrect' }, { status: 400 });
+			}
+
+			updateData.hashedPassword = bcrypt.hashSync(data.newPassword, 10);
+		}
+
 		const updatedUser = await db.user.update({
 			where: { id: params.userId },
-			data: {
-				name: data.name,
-				department: data.department,
-				facultyInitials: data.facultyInitials,
-				facultyPosition: data.facultyPosition,
-			},
+			data: updateData,
 		});
 
 		return NextResponse.json(updatedUser);
