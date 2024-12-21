@@ -27,7 +27,14 @@ const signupUserSchema = z
 		department: z.string().min(1, {
 			message: 'Department is required',
 		}),
-		email: z.string().nonempty({ message: 'Please enter an email address.' }).email({ message: 'Please enter a valid email address.' }),
+		email: z
+			.string()
+			.nonempty({ message: 'Please enter an email address.' })
+			.email({ message: 'Please enter a valid email address.' })
+			.refine((email) => ['@g.bracu.ac.bd', '@bracu.ac.bd'].some((domain) => email.endsWith(domain)), {
+				message: 'Only emails ending with @g.bracu.ac.bd or @bracu.ac.bd are accepted.',
+			}),
+
 		studentId: z.string().optional(),
 		facultyInitials: z.string().optional(),
 		facultyPosition: z.string().optional(),
@@ -69,7 +76,7 @@ const signupUserSchema = z
 		}
 
 		// Ensure student-specific fields are present
-		if (data.role === 'STUDENT' && !data.studentId) {
+		if (data.role === 'STUDENT' && !data.studentId?.trim()) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				message: 'Student ID is required for students',
@@ -78,12 +85,21 @@ const signupUserSchema = z
 		}
 
 		// Ensure faculty-specific fields are present
-		if (data.role === 'FACULTY' && (!data.facultyInitials || !data.facultyPosition)) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message: 'Faculty initials and position are required for faculty',
-				path: ['facultyInitials'], // You can adjust to point to `facultyInitials` or `facultyPosition`
-			});
+		if (data.role === 'FACULTY') {
+			if (!data.facultyInitials?.trim()) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: 'Faculty initials are required for faculty',
+					path: ['facultyInitials'], // Mark the issue on the facultyInitials field
+				});
+			}
+			if (!data.facultyPosition?.trim()) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					message: 'Faculty position is required for faculty',
+					path: ['facultyPosition'], // Mark the issue on the facultyPosition field
+				});
+			}
 		}
 	});
 
@@ -162,6 +178,29 @@ export const SignUpForm = () => {
 					<div className="h-[80px]">
 						<FormField
 							control={form.control}
+							name="role"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Role</FormLabel>
+									<Select disabled={isExecuting} onValueChange={field.onChange} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select your role" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="STUDENT">Student</SelectItem>
+											<SelectItem value="FACULTY">Faculty</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<div className="h-[80px]">
+						<FormField
+							control={form.control}
 							name="name"
 							render={({ field }) => (
 								<FormItem>
@@ -189,29 +228,7 @@ export const SignUpForm = () => {
 							)}
 						/>
 					</div>
-					<div className="h-[80px]">
-						<FormField
-							control={form.control}
-							name="role"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Role</FormLabel>
-									<Select disabled={isExecuting} onValueChange={field.onChange} defaultValue={field.value}>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select your role" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											<SelectItem value="STUDENT">Student</SelectItem>
-											<SelectItem value="FACULTY">Faculty</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
+
 					<div className="h-[80px]">
 						<FormField
 							control={form.control}
