@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { UserProfile } from '@/types/types';
 import Image from 'next/image';
+import { PostsTab } from './tabs/PostsTab';
 
 export const OthersProfile = ({ userId }: { userId: string }) => {
 	const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -69,6 +70,11 @@ export const OthersProfile = ({ userId }: { userId: string }) => {
 					<h3 className="font-semibold mb-1">Total Comments</h3>
 					<p className="text-2xl font-bold">{profile._count.comments}</p>
 				</div>
+			</div>
+
+			<div className="mt-8">
+				<h3 className="text-xl font-semibold mb-4">Posts by {profile.name}</h3>
+				<PostsTab userId={userId} />
 			</div>
 		</div>
 	);
