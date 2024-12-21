@@ -28,6 +28,10 @@ model User {
   hashedPassword String?
   image         String?
   role          UserRole        @default(STUDENT)
+	department    String?
+	studentId     String?
+	facultyInitials     String?
+	facultyPosition     String?
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
