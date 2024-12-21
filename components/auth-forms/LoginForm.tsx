@@ -10,10 +10,9 @@ import { Input } from '@/components/ui/input';
 import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
-import { CustomToast } from '../common/Toast';
 import { loginWithCredentials } from '@/actions/auth-actions/authAction';
 import { useRouter } from 'next/navigation';
-
+import { useToast } from '@/hooks/use-toast';
 const loginUserSchema = z.object({
 	email: z.string().email({ message: 'Email is invalid' }),
 	password: z.string().min(6, { message: 'Password must be at least 6 characters long' }),
@@ -22,6 +21,7 @@ const loginUserSchema = z.object({
 export const LoginForm = () => {
 	const [isExecuting, setIsExecuting] = useState(false);
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const form = useForm({
 		resolver: zodResolver(loginUserSchema),
@@ -44,14 +44,25 @@ export const LoginForm = () => {
 			const result = await loginWithCredentials(formData);
 
 			if (result?.error) {
-				CustomToast.error(result.error);
+				toast({
+					title: 'Error',
+					description: result.error,
+					variant: 'destructive',
+				});
 				return;
 			} else {
-				CustomToast.success('Logged in successfully');
+				toast({
+					title: 'Success',
+					description: 'Logged in successfully',
+				});
 				router.push('/');
 			}
 		} catch (error: any) {
-			CustomToast.error(error.message || 'An unexpected error occurred from frontend catch block');
+			toast({
+				title: 'Error',
+				description: error.message || 'An unexpected error occurred from frontend catch block',
+				variant: 'destructive',
+			});
 		} finally {
 			setIsExecuting(false);
 		}

@@ -9,9 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
-import { CustomToast } from '../common/Toast';
 import { useRouter } from 'next/navigation';
-
+import { useToast } from '@/hooks/use-toast';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
 
@@ -37,6 +36,7 @@ const createPostSchema = z.object({
 export default function CreatePostForm() {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const form = useForm<z.infer<typeof createPostSchema>>({
 		resolver: zodResolver(createPostSchema),
@@ -75,13 +75,24 @@ export default function CreatePostForm() {
 			const data = await response.json();
 
 			if (response.ok) {
-				CustomToast.success('Post created successfully!');
+				toast({
+					title: 'Success',
+					description: 'Post created successfully!',
+				});
 				router.push('/');
 			} else {
-				CustomToast.error(data.error || 'Something went wrong');
+				toast({
+					title: 'Error',
+					description: data.error || 'Something went wrong',
+					variant: 'destructive',
+				});
 			}
 		} catch (error) {
-			CustomToast.error('Failed to create post');
+			toast({
+				title: 'Error',
+				description: 'Failed to create post',
+				variant: 'destructive',
+			});
 		} finally {
 			setIsSubmitting(false);
 		}

@@ -9,9 +9,8 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { CustomToast } from '../common/Toast';
 import { PasswordInput } from '../auth-forms/PasswordInput';
-
+import { useToast } from '@/hooks/use-toast';
 const editProfileSchema = z
 	.object({
 		name: z.string().min(2, {
@@ -78,6 +77,7 @@ export function EditProfileForm({ userId }: { userId: string }) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(true);
 	const [profile, setProfile] = useState<UserProfile | null>(null);
+	const { toast } = useToast();
 
 	const form = useForm<z.infer<typeof editProfileSchema>>({
 		resolver: zodResolver(editProfileSchema),
@@ -110,7 +110,11 @@ export function EditProfileForm({ userId }: { userId: string }) {
 				});
 			} catch (error) {
 				console.error('Error:', error);
-				CustomToast.error('Failed to load profile');
+				toast({
+					title: 'Error',
+					description: 'Failed to load profile',
+					variant: 'destructive',
+				});
 			} finally {
 				setLoading(false);
 			}
@@ -131,12 +135,19 @@ export function EditProfileForm({ userId }: { userId: string }) {
 
 			if (!response.ok) throw new Error('Failed to update profile');
 
-			CustomToast.success('Profile updated successfully');
+			toast({
+				title: 'Success',
+				description: 'Profile updated successfully',
+			});
 			router.push(`/profile/${userId}`);
 			router.refresh();
 		} catch (error) {
 			console.error('Error:', error);
-			CustomToast.error('Failed to update profile');
+			toast({
+				title: 'Error',
+				description: 'Failed to update profile',
+				variant: 'destructive',
+			});
 		}
 	};
 

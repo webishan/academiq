@@ -12,9 +12,9 @@ import { Check, X } from 'lucide-react';
 import { PasswordInput } from './PasswordInput';
 import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
-import { CustomToast } from '../common/Toast';
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 const signupUserSchema = z
 	.object({
@@ -106,6 +106,7 @@ const signupUserSchema = z
 export const SignUpForm = () => {
 	const [isExecuting, setIsExecuting] = useState(false);
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const form = useForm<z.infer<typeof signupUserSchema>>({
 		resolver: zodResolver(signupUserSchema),
@@ -148,14 +149,25 @@ export const SignUpForm = () => {
 			const data = await res.json();
 
 			if (res.ok) {
-				CustomToast.success(data.message);
+				toast({
+					title: 'Account created successfully',
+					description: 'Please login to continue',
+				});
 				router.push('/login');
 			} else {
 				const errorMessage = data.error || 'An unexpected error occurred';
-				CustomToast.error(errorMessage);
+				toast({
+					title: 'Error',
+					description: errorMessage,
+					variant: 'destructive',
+				});
 			}
 		} catch (error: any) {
-			CustomToast.error(error.message || 'An unexpected error occurred from frontend catch block');
+			toast({
+				title: 'Error',
+				description: error.message || 'An unexpected error occurred from frontend catch block',
+				variant: 'destructive',
+			});
 		} finally {
 			setIsExecuting(false);
 		}
