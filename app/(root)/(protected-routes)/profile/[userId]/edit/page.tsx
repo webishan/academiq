@@ -17,7 +17,7 @@ export default async function EditProfilePage({ params }: { params: { userId: st
 
 	return (
 		<PageWrapper>
-			<div className="max-w-4xl mx-auto p-6">
+			<div className="max-w-4xl mx-auto p-6 w-full h-full">
 				<h1 className="text-2xl font-bold mb-6">Edit Profile</h1>
 				<EditProfileForm userId={params.userId} />
 			</div>

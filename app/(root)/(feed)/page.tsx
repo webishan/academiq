@@ -39,8 +39,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 
 	return (
 		<main className="container mx-auto py-8 px-4">
-			<h1 className="text-3xl font-bold mb-8">{searchParams.q ? `Search Results for "${searchParams.q}"` : 'Recent Posts'}</h1>
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+			<div className="w-full flex justify-between items-center max-w-4xl mx-auto">
+				<h1 className="text-3xl font-bold mb-8">{searchParams.q ? `Search Results for "${searchParams.q}"` : 'Recent Posts'}</h1>
+			</div>
+			<div className="grid gap-4 grid-cols-1 gap-y-8 max-w-4xl mx-auto">
 				{posts.map((post: PostWithUser) => (
 					<PostCard key={post.id} post={post} />
 				))}
