@@ -22,6 +22,8 @@ export default function PostCard({ post }: PostCardProps) {
 				<span className="text-sm text-muted-foreground">
 					by {post.user.name} • {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
 				</span>
+				{/* TODO: Ababil: Make sure user name is clickable and redirects to their profile. /profile/{post.user.id} */}
+				{/* TODO: Himel: You can improve the UI. add colors and badges for different roles */}
 			</div>
 
 			<p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.body}</p>
