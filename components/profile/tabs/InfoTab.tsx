@@ -14,7 +14,45 @@ export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 	const router = useRouter();
 
 	const deleteAccount = async (userId: string) => {
-		// TODO: Ishan: Implement delete account
+		try {
+			const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+
+			if (!confirmed || !isOwnProfile) {
+				return;
+			}
+
+			// Delete the account first
+			const response = await fetch(`/api/users/${userId}`, {
+				method: 'DELETE',
+				credentials: 'include'
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to delete account');
+			}
+
+			// Then sign out and clear session
+			await fetch('/api/auth/signout', {
+				method: 'POST',
+				credentials: 'include'
+			});
+
+			// Clear any client-side data
+			window.localStorage.clear();
+			window.sessionStorage.clear();
+
+			// Redirect to homepage and force a refresh to clear all states
+			router.push('/');
+			router.refresh();
+
+
+			// Immediately redirect to home page
+			window.location.replace('/');
+
+		} catch (error) {
+			console.error('Error deleting account:', error);
+			alert('Failed to delete account. Please try again.');
+		}
 	};
 
 	return (
