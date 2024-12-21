@@ -14,7 +14,7 @@ export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 	const router = useRouter();
 
 	const deleteAccount = async (userId: string) => {
-		// TODO: Implement delete account
+		// TODO: Ishan: Implement delete account
 	};
 
 	return (
