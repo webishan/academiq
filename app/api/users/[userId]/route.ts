@@ -92,3 +92,38 @@ export async function PATCH(request: Request, { params }: { params: { userId: st
 		return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
 	}
 }
+
+export async function DELETE(request: Request, { params }: { params: { userId: string } }) {
+	try {
+		const session = await auth();
+		if (!session?.user) {
+			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+		}
+
+		// Security check: Only allow deleting own account
+		if (session.user.id !== params.userId) {
+			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+		}
+
+		// Delete all related records first (due to foreign key constraints)
+		await db.$transaction([
+			// Delete all comments by the user
+			db.comment.deleteMany({
+				where: { userId: params.userId },
+			}),
+			// Delete all posts by the user
+			db.post.deleteMany({
+				where: { userId: params.userId },
+			}),
+			// Finally delete the user
+			db.user.delete({
+				where: { id: params.userId },
+			}),
+		]);
+
+		return NextResponse.json({ message: 'Account deleted successfully' });
+	} catch (error) {
+		console.error('Error deleting user:', error);
+		return NextResponse.json({ error: 'Failed to delete account' }, { status: 500 });
+	}
+}
