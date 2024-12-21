@@ -4,6 +4,19 @@ import Image from 'next/image';
 import { UserProfile } from '@/types/types';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { logout } from '@/actions/auth-actions/authAction';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface InfoTabProps {
 	profile: UserProfile;
@@ -12,46 +25,34 @@ interface InfoTabProps {
 
 export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const deleteAccount = async (userId: string) => {
 		try {
-			const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
-
-			if (!confirmed || !isOwnProfile) {
-				return;
-			}
-
-			// Delete the account first
 			const response = await fetch(`/api/users/${userId}`, {
 				method: 'DELETE',
-				credentials: 'include'
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to delete account');
+				const data = await response.json();
+				throw new Error(data.error || 'Failed to delete account');
 			}
 
-			// Then sign out and clear session
-			await fetch('/api/auth/signout', {
-				method: 'POST',
-				credentials: 'include'
+			toast({
+				title: 'Account deleted',
+				description: 'Your account has been successfully deleted.',
+				variant: 'success',
 			});
 
-			// Clear any client-side data
-			window.localStorage.clear();
-			window.sessionStorage.clear();
-
-			// Redirect to homepage and force a refresh to clear all states
-			router.push('/');
-			router.refresh();
-
-
-			// Immediately redirect to home page
-			window.location.replace('/');
-
+			await logout();
+			router.push('/login');
 		} catch (error) {
 			console.error('Error deleting account:', error);
-			alert('Failed to delete account. Please try again.');
+			toast({
+				title: 'Error',
+				description: 'Failed to delete account',
+				variant: 'destructive',
+			});
 		}
 	};
 
@@ -86,9 +87,28 @@ export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 							<Button onClick={() => router.push(`/profile/${profile.id}/edit`)} variant="outline" className="w-full">
 								Edit Profile
 							</Button>
-							<Button onClick={() => deleteAccount(profile.id)} variant="destructive" className="w-full">
-								Delete Account
-							</Button>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button variant="destructive" className="w-full">
+										Delete Account
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+										<AlertDialogDescription>This action cannot be undone. This will permanently delete your account.</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Cancel</AlertDialogCancel>
+										<AlertDialogAction
+											onClick={() => deleteAccount(profile.id)}
+											className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+										>
+											Delete Account
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
 						</div>
 					)}
 				</div>
