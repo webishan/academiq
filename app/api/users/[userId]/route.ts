@@ -43,3 +43,34 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 		return NextResponse.json({ error: 'Failed to fetch user' }, { status: 500 });
 	}
 }
+
+export async function PATCH(request: Request, { params }: { params: { userId: string } }) {
+	try {
+		const session = await auth();
+		if (!session?.user) {
+			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+		}
+
+		// Security check: Only allow updating own profile
+		if (session.user.id !== params.userId) {
+			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+		}
+
+		const data = await request.json();
+
+		const updatedUser = await db.user.update({
+			where: { id: params.userId },
+			data: {
+				name: data.name,
+				department: data.department,
+				facultyInitials: data.facultyInitials,
+				facultyPosition: data.facultyPosition,
+			},
+		});
+
+		return NextResponse.json(updatedUser);
+	} catch (error) {
+		console.error('Error updating user:', error);
+		return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
+	}
+}

@@ -43,7 +43,7 @@ export const OwnProfile = ({ userId }: { userId: string }) => {
 				</TabsList>
 
 				<TabsContent value="info">
-					<InfoTab profile={profile} />
+					<InfoTab profile={profile} isOwnProfile={true} />
 				</TabsContent>
 
 				<TabsContent value="posts">
