@@ -5,10 +5,12 @@ import { FiLogOut } from 'react-icons/fi';
 import Link from 'next/link';
 import { logout } from '@/actions/auth-actions/authAction';
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
-const ProfileButton = ({ userName, userId }: { userName: string; userId: string }) => {
+const ProfileButton = ({ userName, userId, image }: { userName: string; userId: string; image?: string | null }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	console.log();
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -24,7 +26,7 @@ const ProfileButton = ({ userName, userId }: { userName: string; userId: string 
 	return (
 		<div className="relative" ref={dropdownRef}>
 			<Button variant="outline" className="rounded-full" size="icon" onClick={() => setIsOpen(!isOpen)}>
-				<FaUser className="h-4 w-4" />
+				{image ? <Image src={image} alt="Profile" width={20} height={20} className="rounded-full w-full h-full" /> : <FaUser className="h-4 w-4" />}
 				<span className="sr-only">Open user menu</span>
 			</Button>
 
