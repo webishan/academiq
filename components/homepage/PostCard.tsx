@@ -1,5 +1,3 @@
-'use client';
-
 import { PostWithUser } from '@/types/types';
 import { formatDistanceToNow } from 'date-fns';
 import { Button } from '../ui/button';
@@ -21,7 +19,9 @@ export default function PostCard({ post }: PostCardProps) {
 
 			<div className="flex items-center gap-2 mb-3">
 				<span className="text-sm font-medium">{post.courseCode}</span>
-				<span className="text-sm text-muted-foreground">by {post.user.name}</span>
+				<span className="text-sm text-muted-foreground">
+					by {post.user.name} • {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
+				</span>
 			</div>
 
 			<p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.body}</p>

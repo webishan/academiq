@@ -1,7 +1,12 @@
 import { Post, User, UserRole } from '@prisma/client';
 
 export interface PostWithUser extends Post {
-	user: Pick<User, 'id' | 'name' | 'image'>;
+	user: {
+		id: string;
+		name: string;
+		image: string | null;
+		role: string;
+	};
 	_count: {
 		comments: number;
 		votes: number;

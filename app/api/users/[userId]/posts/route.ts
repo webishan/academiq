@@ -19,6 +19,7 @@ export async function GET(request: Request, { params }: { params: { userId: stri
 						id: true,
 						name: true,
 						image: true,
+						role: true,
 					},
 				},
 				_count: {

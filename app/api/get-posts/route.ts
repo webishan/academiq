@@ -44,6 +44,7 @@ export async function GET(request: Request) {
 						id: true,
 						name: true,
 						image: true,
+						role: true,
 					},
 				},
 				_count: {

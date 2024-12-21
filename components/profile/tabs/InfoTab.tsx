@@ -13,6 +13,10 @@ interface InfoTabProps {
 export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 	const router = useRouter();
 
+	const deleteAccount = async (userId: string) => {
+		// TODO: Implement delete account
+	};
+
 	return (
 		<>
 			<div className="bg-card rounded-lg shadow-sm p-6 mb-6">
@@ -40,9 +44,14 @@ export const InfoTab = ({ profile, isOwnProfile }: InfoTabProps) => {
 						</div>
 					</div>
 					{isOwnProfile && (
-						<Button onClick={() => router.push(`/profile/${profile.id}/edit`)} variant="outline">
-							Edit Profile
-						</Button>
+						<div className="flex flex-col items-center gap-2">
+							<Button onClick={() => router.push(`/profile/${profile.id}/edit`)} variant="outline" className="w-full">
+								Edit Profile
+							</Button>
+							<Button onClick={() => deleteAccount(profile.id)} variant="destructive" className="w-full">
+								Delete Account
+							</Button>
+						</div>
 					)}
 				</div>
 			</div>
