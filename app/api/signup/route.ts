@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import { getUserByEmail } from '@/actions/auth-actions/authAction';
 
 export const POST = async (req: Request) => {
-	const { name, email, password } = await req.json();
+	const { name, email, password, role, department, studentId, facultyInitials, facultyPosition } = await req.json();
 	try {
 		const existingUser = await getUserByEmail(email);
 		if (existingUser) {
@@ -23,6 +23,11 @@ export const POST = async (req: Request) => {
 				name,
 				email,
 				hashedPassword,
+				role,
+				department,
+				studentId: role === 'STUDENT' ? studentId : null,
+				facultyInitials: role === 'FACULTY' ? facultyInitials : null,
+				facultyPosition: role === 'FACULTY' ? facultyPosition : null,
 			},
 		});
 		return new NextResponse(JSON.stringify({ message: 'Account created! Please login' }), {

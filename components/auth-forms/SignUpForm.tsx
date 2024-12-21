@@ -14,15 +14,23 @@ import { useState } from 'react';
 import { GoogleLoginButton } from './GoogleLoginButton';
 import { CustomToast } from '../common/Toast';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const signupUserSchema = z
 	.object({
 		name: z.string().min(2, {
 			message: 'Full Name must be at least 2 characters.',
 		}),
-		email: z.string().email({
-			message: 'Please enter a valid email address.',
+		role: z.enum(['STUDENT', 'FACULTY'], {
+			required_error: 'Please select a role',
 		}),
+		department: z.string().min(1, {
+			message: 'Department is required',
+		}),
+		email: z.string().nonempty({ message: 'Please enter an email address.' }).email({ message: 'Please enter a valid email address.' }),
+		studentId: z.string().optional(),
+		facultyInitials: z.string().optional(),
+		facultyPosition: z.string().optional(),
 		password: z
 			.string()
 			.min(6, { message: 'Password must be at least 6 characters long' })
@@ -41,6 +49,42 @@ const signupUserSchema = z
 	.refine((data) => data.password === data.confirmPassword, {
 		message: 'Passwords do not match',
 		path: ['confirmPassword'],
+	})
+	.superRefine((data, ctx) => {
+		// Validate email domain based on role
+		if (data.role === 'STUDENT' && !data.email.endsWith('@g.bracu.ac.bd')) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Student email must end with @g.bracu.ac.bd',
+				path: ['email'], // Mark the issue on the email field
+			});
+		}
+
+		if (data.role === 'FACULTY' && !data.email.endsWith('@bracu.ac.bd')) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Faculty email must end with @bracu.ac.bd',
+				path: ['email'], // Mark the issue on the email field
+			});
+		}
+
+		// Ensure student-specific fields are present
+		if (data.role === 'STUDENT' && !data.studentId) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Student ID is required for students',
+				path: ['studentId'], // Mark the issue on the studentId field
+			});
+		}
+
+		// Ensure faculty-specific fields are present
+		if (data.role === 'FACULTY' && (!data.facultyInitials || !data.facultyPosition)) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Faculty initials and position are required for faculty',
+				path: ['facultyInitials'], // You can adjust to point to `facultyInitials` or `facultyPosition`
+			});
+		}
 	});
 
 export const SignUpForm = () => {
@@ -52,6 +96,11 @@ export const SignUpForm = () => {
 		defaultValues: {
 			name: '',
 			email: '',
+			role: undefined,
+			department: '',
+			studentId: '',
+			facultyInitials: '',
+			facultyPosition: '',
 			password: '',
 			confirmPassword: '',
 		},
@@ -72,6 +121,11 @@ export const SignUpForm = () => {
 					name: values.name,
 					email: values.email,
 					password: values.password,
+					role: values.role,
+					department: values.department,
+					studentId: values.role === 'STUDENT' ? values.studentId : undefined,
+					facultyInitials: values.role === 'FACULTY' ? values.facultyInitials : undefined,
+					facultyPosition: values.role === 'FACULTY' ? values.facultyPosition : undefined,
 				}),
 			});
 
@@ -135,6 +189,95 @@ export const SignUpForm = () => {
 							)}
 						/>
 					</div>
+					<div className="h-[80px]">
+						<FormField
+							control={form.control}
+							name="role"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Role</FormLabel>
+									<Select disabled={isExecuting} onValueChange={field.onChange} defaultValue={field.value}>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue placeholder="Select your role" />
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											<SelectItem value="STUDENT">Student</SelectItem>
+											<SelectItem value="FACULTY">Faculty</SelectItem>
+										</SelectContent>
+									</Select>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<div className="h-[80px]">
+						<FormField
+							control={form.control}
+							name="department"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Department</FormLabel>
+									<FormControl>
+										<Input placeholder="Enter your department" {...field} disabled={isExecuting} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					{form.watch('role') === 'STUDENT' && (
+						<div className="h-[80px]">
+							<FormField
+								control={form.control}
+								name="studentId"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Student ID</FormLabel>
+										<FormControl>
+											<Input placeholder="Enter your student ID" {...field} disabled={isExecuting} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					)}
+					{form.watch('role') === 'FACULTY' && (
+						<>
+							<div className="h-[80px]">
+								<FormField
+									control={form.control}
+									name="facultyInitials"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Faculty Initials</FormLabel>
+											<FormControl>
+												<Input placeholder="Enter your faculty initials" {...field} disabled={isExecuting} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<div className="h-[80px]">
+								<FormField
+									control={form.control}
+									name="facultyPosition"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Faculty Position</FormLabel>
+											<FormControl>
+												<Input placeholder="Enter your faculty position" {...field} disabled={isExecuting} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</>
+					)}
 					<div className="h-[80px]">
 						<FormField
 							control={form.control}
