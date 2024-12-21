@@ -24,8 +24,8 @@ export default function PostCard({ post }: PostCardProps) {
 					by{' '}
 					<Link href={`/profile/${post.user.id}`} className="text-blue-500 hover:underline">
 						{post.user.name}
-					</Link>{' '}
-					• {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
+					</Link>
+					{post.user.role && <> • {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}</>}
 				</span>
 				{/* TODO: Himel: You can improve the UI. add colors and badges for different roles */}
 			</div>
