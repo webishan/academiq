@@ -78,6 +78,7 @@ export default function CreatePostForm() {
 				toast({
 					title: 'Success',
 					description: 'Post created successfully!',
+					variant: 'success',
 				});
 				router.push('/');
 			} else {

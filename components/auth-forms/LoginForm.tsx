@@ -46,7 +46,7 @@ export const LoginForm = () => {
 			if (result?.error) {
 				toast({
 					title: 'Error',
-					description: result.error,
+					description: 'Invalid credentials',
 					variant: 'destructive',
 				});
 				return;
@@ -54,6 +54,7 @@ export const LoginForm = () => {
 				toast({
 					title: 'Success',
 					description: 'Logged in successfully',
+					variant: 'success',
 				});
 				router.push('/');
 			}

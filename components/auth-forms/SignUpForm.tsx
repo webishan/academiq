@@ -152,6 +152,7 @@ export const SignUpForm = () => {
 				toast({
 					title: 'Account created successfully',
 					description: 'Please login to continue',
+					variant: 'success',
 				});
 				router.push('/login');
 			} else {

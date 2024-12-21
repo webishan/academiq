@@ -138,6 +138,7 @@ export function EditProfileForm({ userId }: { userId: string }) {
 			toast({
 				title: 'Success',
 				description: 'Profile updated successfully',
+				variant: 'success',
 			});
 			router.push(`/profile/${userId}`);
 			router.refresh();
