@@ -13,7 +13,7 @@ import { FiLogOut } from 'react-icons/fi';
 import Link from 'next/link';
 import { logout } from '@/actions/auth-actions/authAction';
 
-const ProfileButton = ({ userName }: { userName: string }) => {
+const ProfileButton = ({ userName, userId }: { userName: string; userId: string }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -26,7 +26,7 @@ const ProfileButton = ({ userName }: { userName: string }) => {
 				<DropdownMenuLabel> {userName}</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
-					<Link href="/profile" className="w-full cursor-pointer flex items-center gap-2">
+					<Link href={`/profile/${userId}`} className="w-full cursor-pointer flex items-center gap-2">
 						<FaUser className="h-4 w-4" />
 						Profile
 					</Link>

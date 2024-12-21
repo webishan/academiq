@@ -19,7 +19,7 @@ export const RootNavbar = async () => {
 				{session?.user ? (
 					<div className="hidden gap-2 md:flex items-center justify-center">
 						<CreatePostButton />
-						<ProfileButton userName={session.user.name || ''} />
+						<ProfileButton userName={session.user.name || ''} userId={session.user.id || ''} />
 					</div>
 				) : (
 					<div className="hidden gap-2 md:flex">
@@ -48,7 +48,7 @@ export const RootNavbar = async () => {
 							<div className="grid gap-4 p-4">
 								<p>{session?.user?.name}</p>
 								<p>{session?.user?.email}</p>
-								<ProfileButton userName={session.user.name || ''} />
+								<ProfileButton userName={session.user.name || ''} userId={session.user.id || ''} />
 							</div>
 						) : (
 							<div className="grid gap-4 p-4">

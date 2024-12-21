@@ -11,8 +11,7 @@ const ProfilePage = async ({ params }: { params: { userId: string } }) => {
 	}
 	return (
 		<PageWrapper>
-			<h1 className="text-3xl font-bold mb-8">{params.userId}</h1>
-			{session?.user?.id === params.userId ? <OwnProfile /> : <OthersProfile />}
+			{session?.user?.id === params.userId ? <OwnProfile userId={params.userId} /> : <OthersProfile userId={params.userId} />}
 		</PageWrapper>
 	);
 };
