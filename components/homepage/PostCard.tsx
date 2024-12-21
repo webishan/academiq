@@ -21,8 +21,13 @@ export default function PostCard({ post }: PostCardProps) {
 			<div className="flex items-center gap-2 mb-3">
 				<span className="text-sm font-medium">{post.courseCode}</span>
 				<span className="text-sm text-muted-foreground">
-					by <Link href={`/profile/${post.user.id}`} className="text-blue-500 hover:underline">{post.user.name}</Link> • {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
+					by{' '}
+					<Link href={`/profile/${post.user.id}`} className="text-blue-500 hover:underline">
+						{post.user.name}
+					</Link>{' '}
+					• {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
 				</span>
+				{/* TODO: Himel: You can improve the UI. add colors and badges for different roles */}
 			</div>
 
 			<p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.body}</p>
