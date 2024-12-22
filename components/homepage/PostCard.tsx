@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { FaEdit, FaTrash, FaFlag, FaShare } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaFlag, FaShare, FaExpand } from 'react-icons/fa';
 
 interface PostCardProps {
 	post: PostWithUser;
@@ -37,9 +37,19 @@ export default function PostCard({ post }: PostCardProps) {
 	return (
 		<div className="w-full rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow">
 			<div className="flex justify-between items-start mb-2">
-				<h2 className="text-xl font-semibold">{post.title}</h2>
+				<div className="flex-1">
+					<Link href={`/post/${post.id}`} className="hover:underline">
+						<h2 className="text-xl font-semibold">{post.title}</h2>
+					</Link>
+				</div>
 				<div className="flex items-center gap-2">
 					<span className="text-sm text-muted-foreground">{formatTimeAgo(new Date(post.createdAt))}</span>
+					<Link href={`/post/${post.id}`}>
+						<Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+							<FaExpand className="h-4 w-4" />
+							<span className="sr-only">View full post</span>
+						</Button>
+					</Link>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" size="sm" className="h-8 w-8 p-0">
