@@ -38,7 +38,7 @@ export default function PostCard({ post }: PostCardProps) {
 		<div className="w-full rounded-lg border p-4 shadow-sm hover:shadow-md transition-shadow">
 			<div className="flex justify-between items-start mb-2">
 				<div className="flex-1">
-					<Link href={`/post/${post.id}`} className="hover:underline">
+					<Link href={`/post/${post.id}`} className="no-underline">
 						<h2 className="text-xl font-semibold">{post.title}</h2>
 					</Link>
 				</div>
