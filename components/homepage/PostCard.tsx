@@ -4,7 +4,9 @@ import { Button } from '../ui/button';
 import { BiSolidUpvote } from 'react-icons/bi';
 import { BiSolidDownvote } from 'react-icons/bi';
 import { FaRegComment } from 'react-icons/fa';
+import { FaRegBookmark } from 'react-icons/fa';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface PostCardProps {
 	post: PostWithUser;
@@ -25,9 +27,20 @@ export default function PostCard({ post }: PostCardProps) {
 					<Link href={`/profile/${post.user.id}`} className="text-blue-500 hover:underline">
 						{post.user.name}
 					</Link>
-					{post.user.role && <> • {post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}</>}
+					{post.user.role && (
+						<>
+							{' • '}
+							<span
+								className={cn(
+									'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+									post.user.role.toLowerCase() === 'student' ? 'bg-blue-100 text-blue-700' : 'bg-violet-100 text-red-700',
+								)}
+							>
+								{post.user.role.charAt(0).toUpperCase() + post.user.role.slice(1).toLowerCase()}
+							</span>
+						</>
+					)}
 				</span>
-				{/* TODO: Himel: You can improve the UI. add colors and badges for different roles */}
 			</div>
 
 			<p className="text-sm text-muted-foreground mb-3 line-clamp-2">{post.body}</p>
@@ -60,6 +73,10 @@ export default function PostCard({ post }: PostCardProps) {
 				<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary flex items-center gap-2">
 					<FaRegComment className="h-4 w-4" />
 					<span className="text-sm">{0}</span>
+				</Button>
+
+				<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary ml-auto">
+					<FaRegBookmark className="h-4 w-4" />
 				</Button>
 			</div>
 		</div>
