@@ -14,7 +14,7 @@ export function PostDetails({ post, currentUserId }: PostDetailsProps) {
 			<PostHeader post={post} currentUserId={currentUserId} />
 			<PostContent post={post} />
 			<PostFooter post={post} currentUserId={currentUserId} />
-			<CommentSection />
+			<CommentSection postId={post.id} currentUserId={currentUserId} />
 		</div>
 	);
 }
