@@ -45,6 +45,9 @@ export async function GET(request: Request) {
 						name: true,
 						image: true,
 						role: true,
+						department: true,
+						facultyInitials: true,
+						facultyPosition: true,
 					},
 				},
 				_count: {

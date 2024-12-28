@@ -6,6 +6,9 @@ export interface PostWithUser extends Post {
 		name: string;
 		image: string | null;
 		role: string;
+		department: string | null;
+		facultyInitials: string | null;
+		facultyPosition: string | null;
 	};
 	_count: {
 		comments: number;
