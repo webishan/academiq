@@ -11,6 +11,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { FaReply, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import Link from 'next/link';
+import { Avatar } from '../ui/avatar';
 
 const replySchema = z.object({
 	body: z.string().min(1, 'Reply cannot be empty'),
@@ -72,77 +73,87 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 	return (
 		<div className="space-y-4">
 			<div className="bg-secondary/15 p-4 rounded-3xl">
-				<div className="flex items-center gap-2 mb-2">
-					<Link href={`/profile/${comment.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
-						{comment.user.name}
-					</Link>
-					<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
-				</div>
-				<p className="text-sm mb-3 whitespace-pre-wrap">{comment.body}</p>
-				<div className="flex items-center gap-2">
-					{currentUserId && (
-						<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
-							<FaReply className="h-3 w-3" />
-							Reply
-						</Button>
-					)}
-					{hasReplies && (
-						<Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 hover:text-primary">
-							{isExpanded ? <FaChevronDown className="h-3 w-3" /> : <FaChevronRight className="h-3 w-3" />}
-							{comment.children.length} {comment.children.length === 1 ? 'reply' : 'replies'}
-						</Button>
-					)}
-				</div>
+				<div className="flex gap-3">
+					<Avatar src={comment.user.image} name={comment.user.name} />
+					<div className="flex-1">
+						<div className="flex items-center gap-2 mb-2">
+							<Link href={`/profile/${comment.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
+								{comment.user.name}
+							</Link>
+							<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
+						</div>
+						<p className="text-sm mb-3 whitespace-pre-wrap">{comment.body}</p>
+						<div className="flex items-center gap-2">
+							{currentUserId && (
+								<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
+									<FaReply className="h-3 w-3" />
+									Reply
+								</Button>
+							)}
+							{hasReplies && (
+								<Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 hover:text-primary">
+									{isExpanded ? <FaChevronDown className="h-3 w-3" /> : <FaChevronRight className="h-3 w-3" />}
+									{comment.children.length} {comment.children.length === 1 ? 'reply' : 'replies'}
+								</Button>
+							)}
+						</div>
 
-				{isReplying && (
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmitReply)} className="mt-4 space-y-4">
-							<FormField
-								control={form.control}
-								name="body"
-								render={({ field }) => (
-									<FormItem>
-										<FormControl>
-											<Textarea
-												placeholder="Write a reply..."
-												className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<div className="flex gap-2">
-								<Button type="submit" size="sm" disabled={form.formState.isSubmitting} variant="secondary">
-									{form.formState.isSubmitting ? 'Posting...' : 'Post Reply'}
-								</Button>
-								<Button
-									type="button"
-									variant="ghost"
-									size="sm"
-									onClick={() => setIsReplying(false)}
-									className="hover:text-red-500 hover:bg-transparent"
-								>
-									Cancel
-								</Button>
-							</div>
-						</form>
-					</Form>
-				)}
+						{isReplying && (
+							<Form {...form}>
+								<form onSubmit={form.handleSubmit(onSubmitReply)} className="mt-4 space-y-4">
+									<FormField
+										control={form.control}
+										name="body"
+										render={({ field }) => (
+											<FormItem>
+												<FormControl>
+													<Textarea
+														placeholder="Write a reply..."
+														className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
+														{...field}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<div className="flex gap-2">
+										<Button type="submit" size="sm" disabled={form.formState.isSubmitting} variant="secondary">
+											{form.formState.isSubmitting ? 'Posting...' : 'Post Reply'}
+										</Button>
+										<Button
+											type="button"
+											variant="ghost"
+											size="sm"
+											onClick={() => setIsReplying(false)}
+											className="hover:text-red-500 hover:bg-transparent"
+										>
+											Cancel
+										</Button>
+									</div>
+								</form>
+							</Form>
+						)}
+					</div>
+				</div>
 			</div>
 
 			{hasReplies && isExpanded && (
-				<div className="ml-14 space-y-4 border-l-2 border-gray-700 pl-4 bg-secondary/20 rounded-r-3xl">
+				<div className="ml-14 space-y-4 border-l-2 border-gray-700 pl-4 bg-secondary/20">
 					{comment.children.map((reply: any) => (
 						<div key={reply.id} className="bg-muted/10 p-4">
-							<div className="flex items-center gap-2 mb-2">
-								<Link href={`/profile/${reply.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
-									{reply.user.name}
-								</Link>
-								<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</span>
+							<div className="flex gap-3">
+								<Avatar src={reply.user.image} name={reply.user.name} />
+								<div className="flex-1">
+									<div className="flex items-center gap-2 mb-2">
+										<Link href={`/profile/${reply.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
+											{reply.user.name}
+										</Link>
+										<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</span>
+									</div>
+									<p className="text-sm whitespace-pre-wrap">{reply.body}</p>
+								</div>
 							</div>
-							<p className="text-sm whitespace-pre-wrap">{reply.body}</p>
 						</div>
 					))}
 				</div>

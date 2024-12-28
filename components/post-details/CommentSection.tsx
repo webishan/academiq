@@ -10,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form'
 import { Comment } from './Comment';
 import { useToast } from '@/hooks/use-toast';
 import { FaRegComment } from 'react-icons/fa';
+import { Avatar } from '../ui/avatar';
 
 const commentSchema = z.object({
 	body: z.string().min(1, 'Comment cannot be empty'),
@@ -18,9 +19,14 @@ const commentSchema = z.object({
 interface CommentSectionProps {
 	postId: string;
 	currentUserId?: string;
+	currentUser?: {
+		name: string;
+		image?: string | null;
+	};
 }
 
-export default function CommentSection({ postId, currentUserId }: CommentSectionProps) {
+export default function CommentSection({ postId, currentUserId, currentUser }: CommentSectionProps) {
+	// console.log('CommentSection currentUser:', currentUser);
 	const [comments, setComments] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const { toast } = useToast();
@@ -90,22 +96,27 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 			{currentUserId && (
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-						<FormField
-							control={form.control}
-							name="body"
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<Textarea
-											placeholder="Write a comment..."
-											className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+						<div className="flex gap-3">
+							<Avatar src={currentUser?.image} name={currentUser?.name || ''} />
+							<div className="flex-1">
+								<FormField
+									control={form.control}
+									name="body"
+									render={({ field }) => (
+										<FormItem>
+											<FormControl>
+												<Textarea
+													placeholder="Write a comment..."
+													className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</div>
 						<div className="flex justify-end">
 							<Button type="submit" disabled={form.formState.isSubmitting} className="w-full sm:w-auto" variant="secondary">
 								{form.formState.isSubmitting ? 'Posting...' : 'Post Comment'}

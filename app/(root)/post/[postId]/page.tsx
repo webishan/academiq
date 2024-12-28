@@ -34,11 +34,21 @@ export default async function PostDetailPage({ params }: { params: { postId: str
 	const currentUserId = session?.user?.id;
 	const post = await getPost(params.postId);
 
+	// console.log('💖', session?.user?.image);
+	// console.log('Session data:', session?.user);
+
 	return (
 		<PageWrapper>
 			<div className="container mx-auto py-8 px-4">
 				<div className="max-w-6xl mx-auto">
-					<PostDetails post={post} currentUserId={currentUserId} />
+					<PostDetails
+						post={post}
+						currentUserId={session?.user?.id}
+						currentUser={{
+							name: session?.user?.name || '',
+							image: session?.user?.image || null,
+						}}
+					/>
 				</div>
 			</div>
 		</PageWrapper>
