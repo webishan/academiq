@@ -15,12 +15,12 @@ export function PostActions() {
 function VoteButtons() {
 	return (
 		<div className="flex items-center gap-1">
-			<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary">
-				<BiSolidUpvote className="h-5 w-5" />
+			<Button variant="icon" size="icon" className="hover:text-green-400">
+				<BiSolidUpvote />
 			</Button>
 			<span className="text-sm font-medium">{0}</span>
-			<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary">
-				<BiSolidDownvote className="h-5 w-5" />
+			<Button variant="icon" size="icon" className="hover:text-red-400">
+				<BiSolidDownvote />
 			</Button>
 			<span className="text-sm font-medium">{0}</span>
 		</div>
@@ -29,17 +29,19 @@ function VoteButtons() {
 
 function CommentButton() {
 	return (
-		<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary flex items-center gap-2">
-			<FaRegComment className="h-4 w-4" />
-			<span className="text-sm">{0}</span>
-		</Button>
+		<div className="flex items-center gap-1">
+			<Button variant="icon" size="icon" className="hover:text-red-400">
+				<FaRegComment />
+			</Button>
+			<span className="text-sm font-medium">{0}</span>
+		</div>
 	);
 }
 
 function BookmarkButton() {
 	return (
-		<Button variant="ghost" size="sm" className="hover:bg-primary/10 hover:text-primary ml-auto">
-			<FaRegBookmark className="h-4 w-4" />
+		<Button variant="icon" size="icon" className="hover:text-red-400">
+			<FaRegBookmark />
 		</Button>
 	);
 }
