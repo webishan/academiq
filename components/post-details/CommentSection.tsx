@@ -9,6 +9,7 @@ import { Textarea } from '../ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { Comment } from './Comment';
 import { useToast } from '@/hooks/use-toast';
+import { FaRegComment } from 'react-icons/fa';
 
 const commentSchema = z.object({
 	body: z.string().min(1, 'Comment cannot be empty'),
@@ -68,7 +69,7 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 			if (!response.ok) throw new Error('Failed to post comment');
 
 			form.reset();
-			fetchComments(); // Refresh comments
+			fetchComments();
 			toast({
 				title: 'Success',
 				description: 'Comment posted successfully',
@@ -85,7 +86,13 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 	};
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 px-6">
+			<div className="flex items-center gap-2 pb-4">
+				<FaRegComment className="h-5 w-5" />
+				<h2 className="text-xl font-semibold">Comments</h2>
+				<span className="text-sm text-muted-foreground">({comments.length})</span>
+			</div>
+
 			{currentUserId && (
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -95,24 +102,31 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Textarea placeholder="Write a comment..." {...field} />
+										<Textarea placeholder="Write a comment..." className="min-h-[100px] resize-none bg-muted/50" {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" disabled={form.formState.isSubmitting}>
-							Post Comment
-						</Button>
+						<div className="flex justify-end">
+							<Button type="submit" disabled={form.formState.isSubmitting} className="w-full sm:w-auto">
+								{form.formState.isSubmitting ? 'Posting...' : 'Post Comment'}
+							</Button>
+						</div>
 					</form>
 				</Form>
 			)}
 
-			<div className="space-y-4">
+			<div className="space-y-6">
 				{isLoading ? (
-					<p>Loading comments...</p>
+					<div className="flex justify-center py-8">
+						<p className="text-muted-foreground">Loading comments...</p>
+					</div>
 				) : comments.length === 0 ? (
-					<p className="text-muted-foreground">No comments yet</p>
+					<div className="flex flex-col items-center justify-center py-8 text-center">
+						<p className="text-muted-foreground">No comments yet</p>
+						{currentUserId && <p className="text-sm text-muted-foreground mt-1">Be the first to comment!</p>}
+					</div>
 				) : (
 					comments.map((comment) => (
 						<Comment key={comment.id} comment={comment} postId={postId} currentUserId={currentUserId} onCommentUpdate={fetchComments} />
