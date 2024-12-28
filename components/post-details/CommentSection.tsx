@@ -86,13 +86,7 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 	};
 
 	return (
-		<div className="space-y-6 px-6">
-			<div className="flex items-center gap-2 pb-4">
-				<FaRegComment className="h-5 w-5" />
-				<h2 className="text-xl font-semibold">Comments</h2>
-				<span className="text-sm text-muted-foreground">({comments.length})</span>
-			</div>
-
+		<div className="px-6 mt-10">
 			{currentUserId && (
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -102,20 +96,29 @@ export default function CommentSection({ postId, currentUserId }: CommentSection
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Textarea placeholder="Write a comment..." className="min-h-[100px] resize-none bg-muted/50" {...field} />
+										<Textarea
+											placeholder="Write a comment..."
+											className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<div className="flex justify-end">
-							<Button type="submit" disabled={form.formState.isSubmitting} className="w-full sm:w-auto">
+							<Button type="submit" disabled={form.formState.isSubmitting} className="w-full sm:w-auto" variant="secondary">
 								{form.formState.isSubmitting ? 'Posting...' : 'Post Comment'}
 							</Button>
 						</div>
 					</form>
 				</Form>
 			)}
+			<div className="flex items-center gap-2 pb-4">
+				<FaRegComment className="h-5 w-5" />
+				<h2 className="text-xl font-semibold">Comments</h2>
+				<span className="text-sm text-muted-foreground">({comments.length})</span>
+			</div>
 
 			<div className="space-y-6">
 				{isLoading ? (

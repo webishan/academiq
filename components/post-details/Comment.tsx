@@ -9,7 +9,7 @@ import { Textarea } from '../ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { FaReply } from 'react-icons/fa';
+import { FaReply, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import Link from 'next/link';
 
 const replySchema = z.object({
@@ -25,7 +25,9 @@ interface CommentProps {
 
 export function Comment({ comment, postId, currentUserId, onCommentUpdate }: CommentProps) {
 	const [isReplying, setIsReplying] = useState(false);
+	const [isExpanded, setIsExpanded] = useState(true);
 	const { toast } = useToast();
+	const hasReplies = comment.children && comment.children.length > 0;
 
 	const form = useForm<z.infer<typeof replySchema>>({
 		resolver: zodResolver(replySchema),
@@ -69,20 +71,28 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 
 	return (
 		<div className="space-y-4">
-			<div className="bg-muted/20 p-4 rounded-lg">
+			<div className="bg-secondary/15 p-4 rounded-3xl">
 				<div className="flex items-center gap-2 mb-2">
-					<Link href={`/profile/${comment.user.id}`} className="font-semibold hover:text-primary transition-colors">
+					<Link href={`/profile/${comment.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
 						{comment.user.name}
 					</Link>
 					<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
 				</div>
 				<p className="text-sm mb-3 whitespace-pre-wrap">{comment.body}</p>
-				{currentUserId && (
-					<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
-						<FaReply className="h-3 w-3" />
-						Reply
-					</Button>
-				)}
+				<div className="flex items-center gap-2">
+					{currentUserId && (
+						<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
+							<FaReply className="h-3 w-3" />
+							Reply
+						</Button>
+					)}
+					{hasReplies && (
+						<Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 hover:text-primary">
+							{isExpanded ? <FaChevronDown className="h-3 w-3" /> : <FaChevronRight className="h-3 w-3" />}
+							{comment.children.length} {comment.children.length === 1 ? 'reply' : 'replies'}
+						</Button>
+					)}
+				</div>
 
 				{isReplying && (
 					<Form {...form}>
@@ -93,17 +103,27 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Textarea placeholder="Write a reply..." className="min-h-[80px] resize-none bg-background/50" {...field} />
+											<Textarea
+												placeholder="Write a reply..."
+												className="min-h-[50px] border-[0.5px] border-transparent resize-none bg-gray-bg focus-visible:ring-0 focus-visible:border-secondary rounded-xl"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
 							<div className="flex gap-2">
-								<Button type="submit" size="sm" disabled={form.formState.isSubmitting}>
+								<Button type="submit" size="sm" disabled={form.formState.isSubmitting} variant="secondary">
 									{form.formState.isSubmitting ? 'Posting...' : 'Post Reply'}
 								</Button>
-								<Button type="button" variant="ghost" size="sm" onClick={() => setIsReplying(false)}>
+								<Button
+									type="button"
+									variant="ghost"
+									size="sm"
+									onClick={() => setIsReplying(false)}
+									className="hover:text-red-500 hover:bg-transparent"
+								>
 									Cancel
 								</Button>
 							</div>
@@ -112,12 +132,12 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 				)}
 			</div>
 
-			{comment.children && comment.children.length > 0 && (
-				<div className="ml-8 space-y-4 border-l-2 border-muted pl-4">
+			{hasReplies && isExpanded && (
+				<div className="ml-14 space-y-4 border-l-2 border-gray-700 pl-4 bg-secondary/20 rounded-r-3xl">
 					{comment.children.map((reply: any) => (
-						<div key={reply.id} className="bg-muted/10 p-4 rounded-lg">
+						<div key={reply.id} className="bg-muted/10 p-4">
 							<div className="flex items-center gap-2 mb-2">
-								<Link href={`/profile/${reply.user.id}`} className="font-semibold hover:text-primary transition-colors">
+								<Link href={`/profile/${reply.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
 									{reply.user.name}
 								</Link>
 								<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</span>

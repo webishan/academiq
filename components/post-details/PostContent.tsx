@@ -8,13 +8,13 @@ interface PostContentProps {
 
 export function PostContent({ post }: PostContentProps) {
 	return (
-		<div className="p-6">
+		<div className="pt-6 px-6">
 			<div className="prose prose-invert max-w-none">
 				<p className="text-foreground whitespace-pre-wrap">{post.body}</p>
 			</div>
 
 			{post.materials && post.materials.length > 0 && (
-				<div className="mt-6 p-4 bg-muted/20 rounded-lg">
+				<div className="p-4 bg-muted/20 rounded-lg">
 					<h3 className="text-lg font-semibold mb-3">Attachments</h3>
 					<div className="grid gap-2">
 						{post.materials.map((url: string, index: number) => (
@@ -33,7 +33,7 @@ export function PostContent({ post }: PostContentProps) {
 				</div>
 			)}
 
-			<div className="flex flex-wrap gap-2 mt-6">
+			<div className="flex flex-wrap gap-2 mt-8 mb-4">
 				{post.topics.map((topic: string, index: number) => (
 					<Badge key={index} variant="dark" className="text-xs rounded-full text-muted-foreground">
 						{topic}

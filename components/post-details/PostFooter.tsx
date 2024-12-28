@@ -10,7 +10,7 @@ interface PostFooterProps {
 
 export function PostFooter({ post, currentUserId }: PostFooterProps) {
 	return (
-		<div className="bg-transparent border-b mx-6 mb-4">
+		<div className="bg-transparent mx-6 border-t pt-1">
 			<div className="flex items-center gap-2">
 				<div className="flex items-center gap-1">
 					<Button variant="icon" size="icon" className="hover:text-green-400">
