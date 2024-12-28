@@ -5,6 +5,7 @@ import { FaEdit, FaTrash, FaFlag, FaShare, FaExpand, FaUser, FaGraduationCap, Fa
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { PostWithUser } from '@/types/types';
+import { Badge } from '@/components/ui/badge';
 
 interface PostHeaderProps {
 	post: PostWithUser;
@@ -33,10 +34,10 @@ export function PostHeader({ post, currentUserId }: PostHeaderProps) {
 	};
 
 	return (
-		<div className="w-full">
-			<div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-				<span className="uppercase font-medium">{post.courseCode}</span>
-			</div>
+		<div className="w-full bg-gray-bg p-4">
+			<Badge variant="secondary" className="mb-2 rounded-full">
+				<span className="uppercase font-bold text-md">{post.courseCode}</span>
+			</Badge>
 			<div className="flex justify-between items-start mb-2 w-full">
 				<div className="flex-1">
 					<Link href={`/post/${post.id}`} className="no-underline">
