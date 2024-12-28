@@ -25,6 +25,14 @@ interface CommentSectionProps {
 	};
 }
 
+const getTotalCommentCount = (comments: any[]) => {
+	return comments.reduce((total, comment) => {
+		// Add 1 for the parent comment
+		// Add the number of replies (children) if they exist
+		return total + 1 + (comment.children?.length || 0);
+	}, 0);
+};
+
 export default function CommentSection({ postId, currentUserId, currentUser }: CommentSectionProps) {
 	// console.log('CommentSection currentUser:', currentUser);
 	const [comments, setComments] = useState<any[]>([]);
@@ -128,7 +136,7 @@ export default function CommentSection({ postId, currentUserId, currentUser }: C
 			<div className="flex items-center gap-2 pb-4">
 				<FaRegComment className="h-5 w-5" />
 				<h2 className="text-xl font-semibold">Comments</h2>
-				<span className="text-sm text-muted-foreground">({comments.length})</span>
+				<span className="text-sm text-muted-foreground">({getTotalCommentCount(comments)})</span>
 			</div>
 
 			<div className="space-y-6">
