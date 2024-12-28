@@ -1,5 +1,6 @@
 import PostCard from '@/components/homepage/PostCard';
 import { PostWithUser } from '@/types/types';
+import { auth } from '@/lib/auth';
 
 interface SearchParams {
 	q?: string;
@@ -42,6 +43,8 @@ async function getPosts(searchParams: SearchParams) {
 }
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+	const session = await auth();
+	const currentUserId = session?.user?.id;
 	const posts = await getPosts(searchParams);
 
 	if (!posts) {
@@ -49,16 +52,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 			<main className="container mx-auto py-8 px-4">
 				<div className="w-full flex justify-center items-center h-[50vh]">
 					<p>Error loading posts</p>
-				</div>
-			</main>
-		);
-	}
-
-	if (!Array.isArray(posts)) {
-		return (
-			<main className="container mx-auto py-8 px-4">
-				<div className="w-full flex justify-center items-center h-[50vh]">
-					<p>Invalid posts data received</p>
 				</div>
 			</main>
 		);
@@ -73,7 +66,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 				{posts.length === 0 ? (
 					<p className="text-center text-muted-foreground">No posts found</p>
 				) : (
-					posts.map((post: PostWithUser) => <PostCard key={post.id} post={post} />)
+					posts.map((post: PostWithUser) => <PostCard key={post.id} post={post} currentUserId={currentUserId} />)
 				)}
 			</div>
 		</main>

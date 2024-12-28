@@ -2,17 +2,14 @@ import { PostWithUser } from '@/types/types';
 import Link from 'next/link';
 import { PostHeader } from './post-card/PostHeader';
 import { PostActions } from './post-card/PostActions';
-import { auth } from '@/lib/auth';
 import { Badge } from '../ui/badge';
 
 interface PostCardProps {
 	post: PostWithUser;
+	currentUserId?: string;
 }
 
-export default async function PostCard({ post }: PostCardProps) {
-	const session = await auth();
-	const currentUserId = session?.user?.id;
-
+export default function PostCard({ post, currentUserId }: PostCardProps) {
 	return (
 		<div className="w-full rounded-lg border shadow-sm hover:shadow-md transition-shadow">
 			<PostHeader post={post} currentUserId={currentUserId} />
@@ -26,11 +23,6 @@ export default async function PostCard({ post }: PostCardProps) {
 					</Badge>
 				))}
 			</div>
-
-			{/* <div className="flex items-center gap-2">
-				{post.hasMaterial && <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">Has attachments</span>}
-				{post.hasLink && <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">Contains links</span>}
-			</div> */}
 
 			<PostActions />
 		</div>
