@@ -108,9 +108,9 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 						</DialogHeader>
 						<div className="space-y-4 max-h-[400px] overflow-y-auto">
 							{comment.reports.map((report: Report) => (
-								<div key={report.id} className="border-b pb-4">
+								<div key={report.id} className="border-b pb-4 border-transparent bg-yellow-500/10 shadow px-2 py-1 rounded-md">
 									<div className="flex justify-between items-start">
-										<Link href={`/profile/${report.user.id}`} className="font-semibold hover:text-primary">
+										<Link href={`/profile/${report.user.id}`} className="font-semibold text-primary hover:text-accent">
 											{report.user.name}
 										</Link>
 										<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(report.createdAt), { addSuffix: true })}</span>
