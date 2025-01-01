@@ -17,6 +17,7 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { ReportDialog } from '@/components/common/ReportDialog';
 
 interface PostHeaderDropdownProps {
 	postId: string;
@@ -89,10 +90,15 @@ export function PostHeaderDropdown({ postId, isAuthor }: PostHeaderDropdownProps
 						</AlertDialog>
 					</>
 				)}
-				<DropdownMenuItem className="group text-white cursor-pointer">
-					<FaFlag className="h-4 w-4 mr-2 text-white group-hover:text-yellow-500 transition-colors" />
-					<span className="text-white group-hover:text-yellow-500 transition-colors">Report</span>
-				</DropdownMenuItem>
+				<ReportDialog
+					postId={postId}
+					trigger={
+						<DropdownMenuItem className="group text-white cursor-pointer" onSelect={(e) => e.preventDefault()}>
+							<FaFlag className="h-4 w-4 mr-2 text-white group-hover:text-yellow-500 transition-colors" />
+							<span className="text-white group-hover:text-yellow-500 transition-colors">Report</span>
+						</DropdownMenuItem>
+					}
+				/>
 				<DropdownMenuItem className="group text-white cursor-pointer">
 					<FaShare className="h-4 w-4 mr-2 text-white group-hover:text-green-400 transition-colors" />
 					<span className="text-white group-hover:text-green-400 transition-colors">Share</span>
