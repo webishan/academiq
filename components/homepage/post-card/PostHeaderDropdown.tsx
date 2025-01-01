@@ -6,6 +6,17 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaEdit, FaTrash, FaFlag, FaShare } from 'react-icons/fa';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface PostHeaderDropdownProps {
 	postId: string;
@@ -17,8 +28,6 @@ export function PostHeaderDropdown({ postId, isAuthor }: PostHeaderDropdownProps
 	const { toast } = useToast();
 
 	const handleDelete = async () => {
-		if (!confirm('Are you sure you want to delete this post?')) return;
-
 		try {
 			const response = await fetch(`/api/get-posts/${postId}`, {
 				method: 'DELETE',
@@ -58,10 +67,26 @@ export function PostHeaderDropdown({ postId, isAuthor }: PostHeaderDropdownProps
 							<FaEdit className="h-4 w-4 mr-2 text-white group-hover:text-blue-400 transition-colors" />
 							<span className="text-white group-hover:text-blue-400 transition-colors">Edit</span>
 						</DropdownMenuItem>
-						<DropdownMenuItem className="group text-white cursor-pointer" onClick={handleDelete}>
-							<FaTrash className="h-4 w-4 mr-2 text-white group-hover:text-red-500 transition-colors" />
-							<span className="text-white group-hover:text-red-500 transition-colors">Delete</span>
-						</DropdownMenuItem>
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<DropdownMenuItem className="group text-white cursor-pointer" onSelect={(e) => e.preventDefault()}>
+									<FaTrash className="h-4 w-4 mr-2 text-white group-hover:text-red-500 transition-colors" />
+									<span className="text-white group-hover:text-red-500 transition-colors">Delete</span>
+								</DropdownMenuItem>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Are you sure?</AlertDialogTitle>
+									<AlertDialogDescription>This action cannot be undone. This will permanently delete your post.</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+										Delete
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
 					</>
 				)}
 				<DropdownMenuItem className="group text-white cursor-pointer">

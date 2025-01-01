@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaEdit, FaTrash, FaFlag, FaShare, FaExpand, FaUser, FaGraduationCap, FaBuilding, FaChalkboardTeacher, FaIdCard } from 'react-icons/fa';
+import { FaExpand, FaUser, FaGraduationCap, FaBuilding, FaChalkboardTeacher, FaIdCard } from 'react-icons/fa';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { PostWithUser } from '@/types/types';
