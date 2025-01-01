@@ -72,15 +72,16 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 	};
 
 	return (
-		<div className="bg-card p-4 rounded-lg shadow">
+		<div className="p-4 rounded-lg shadow bg-gray-bg border">
 			<div className="flex justify-between items-start mb-4">
 				<div>
 					<Link href={`/profile/${comment.user.id}`} className="font-semibold hover:text-primary flex items-center gap-1">
-						<FaUser className="h-3 w-3" />
-						{comment.user.name}
+						<FaUser className="h-4 w-4" />
+						<span className="">{comment.user.name}</span>
 					</Link>
 					<Link href={`/post/${comment.post.id}`} className="text-sm text-muted-foreground hover:text-primary block mt-1">
-						on post: {comment.post.title}
+						<span className="font-semibold bg-secondary px-1 py-0.5 mr-1 rounded-md text-white truncate">Post: </span>
+						{comment.post.title}
 					</Link>
 				</div>
 				<Badge variant="warning">{comment._count.reports} reports</Badge>
@@ -88,7 +89,7 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 
 			<p className="text-sm mb-4 whitespace-pre-wrap">{comment.body}</p>
 
-			<div className="flex items-center gap-2 mb-4">
+			<div className="flex items-center gap-2 mb-2">
 				<Dialog>
 					<DialogTrigger asChild>
 						<Button variant="outline" size="sm">
@@ -117,13 +118,13 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 					</DialogContent>
 				</Dialog>
 
-				<Button variant="destructive" size="sm" onClick={handleDelete} disabled={isLoading}>
-					<FaTrash className="h-4 w-4 mr-2" />
-					Delete Comment
-				</Button>
 				<Button variant="outline" size="sm" onClick={handleKeep} disabled={isLoading}>
 					<FaCheck className="h-4 w-4 mr-2" />
 					Keep Comment
+				</Button>
+				<Button variant="destructive" size="sm" onClick={handleDelete} disabled={isLoading}>
+					<FaTrash className="h-4 w-4 mr-2" />
+					Delete Comment
 				</Button>
 			</div>
 

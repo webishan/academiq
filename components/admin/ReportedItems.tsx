@@ -44,31 +44,35 @@ export function ReportedItems() {
 	}
 
 	return (
-		<div className="space-y-8">
-			<div>
-				<h2 className="text-xl font-semibold mb-4">Reported Posts</h2>
-				{reportedPosts.length === 0 ? (
-					<p className="text-muted-foreground">No reported posts</p>
-				) : (
-					<div className="space-y-4">
-						{reportedPosts.map((post) => (
-							<ReportedPostCard key={post.id} post={post} onActionComplete={fetchReportedItems} />
-						))}
-					</div>
-				)}
+		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div className="flex flex-col items-start justify-start">
+				<div className="space-y-4 w-[80%]">
+					<h2 className="text-xl font-semibold mb-4">Reported Posts</h2>
+					{reportedPosts.length === 0 ? (
+						<p className="text-muted-foreground">No reported posts</p>
+					) : (
+						<div className="">
+							{reportedPosts.map((post) => (
+								<ReportedPostCard key={post.id} post={post} onActionComplete={fetchReportedItems} />
+							))}
+						</div>
+					)}
+				</div>
 			</div>
 
-			<div>
-				<h2 className="text-xl font-semibold mb-4">Reported Comments</h2>
-				{reportedComments.length === 0 ? (
-					<p className="text-muted-foreground">No reported comments</p>
-				) : (
-					<div className="space-y-4">
-						{reportedComments.map((comment) => (
-							<ReportedCommentCard key={comment.id} comment={comment} onActionComplete={fetchReportedItems} />
-						))}
-					</div>
-				)}
+			<div className="flex flex-col items-end justify-start">
+				<div className="space-y-4 w-[80%]">
+					<h2 className="text-xl font-semibold mb-4">Reported Comments</h2>
+					{reportedComments.length === 0 ? (
+						<p className="text-muted-foreground">No reported comments</p>
+					) : (
+						<div className="">
+							{reportedComments.map((comment) => (
+								<ReportedCommentCard key={comment.id} comment={comment} onActionComplete={fetchReportedItems} />
+							))}
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);

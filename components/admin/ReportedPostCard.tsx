@@ -74,7 +74,7 @@ export function ReportedPostCard({ post, onActionComplete }: ReportedPostCardPro
 	};
 
 	return (
-		<div className="bg-card p-4 rounded-lg shadow">
+		<div className="p-4 rounded-lg shadow bg-gray-bg border">
 			<div className="flex justify-between items-start mb-4">
 				<div>
 					<Link href={`/post/${post.id}`} className="text-lg font-semibold hover:text-primary">
@@ -123,13 +123,13 @@ export function ReportedPostCard({ post, onActionComplete }: ReportedPostCardPro
 					</DialogContent>
 				</Dialog>
 
-				<Button variant="destructive" size="sm" onClick={handleDelete} disabled={isLoading}>
-					<FaTrash className="h-4 w-4 mr-2" />
-					Delete Post
-				</Button>
 				<Button variant="outline" size="sm" onClick={handleKeep} disabled={isLoading}>
 					<FaCheck className="h-4 w-4 mr-2" />
 					Keep Post
+				</Button>
+				<Button variant="destructive" size="sm" onClick={handleDelete} disabled={isLoading}>
+					<FaTrash className="h-4 w-4 mr-2" />
+					Delete Post
 				</Button>
 			</div>
 
