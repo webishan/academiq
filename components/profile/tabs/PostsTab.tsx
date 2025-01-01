@@ -34,7 +34,7 @@ export const PostsTab = ({ userId }: PostsTabProps) => {
 	if (loading) return <div>Loading posts...</div>;
 
 	return (
-		<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div className="grid gap-4 grid-cols-1">
 			{posts.length === 0 ? (
 				<p className="text-muted-foreground col-span-full text-center">No posts yet</p>
 			) : (

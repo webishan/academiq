@@ -11,12 +11,13 @@ interface PostCardProps {
 
 export default function PostCard({ post, currentUserId }: PostCardProps) {
 	return (
-		<div className="w-full rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+		<div className="w-full rounded-lg border shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
 			<PostHeader post={post} currentUserId={currentUserId} />
 
-			<p className="text-sm text-foreground my-3 line-clamp-2 px-4">{post.body}</p>
-
-			<div className="flex flex-wrap gap-2 mb-3 px-4">
+			<div className="flex-1 flex flex-col px-4">
+				<p className="text-sm text-foreground my-3 line-clamp-2">{post.body}</p>
+			</div>
+			<div className="flex flex-wrap gap-2 mb-3 mt-auto px-4">
 				{post.topics.map((topic, index) => (
 					<Badge key={index} variant="dark" className="text-xs rounded-full text-muted-foreground">
 						{topic}
