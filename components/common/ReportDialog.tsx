@@ -12,6 +12,7 @@ interface ReportDialogProps {
 	trigger: React.ReactNode;
 }
 
+// TODO: Himel - Replace this function
 export function ReportDialog({ postId, commentId, trigger }: ReportDialogProps) {
-	// TODO: Himel -  add the code here
+	return <div>Dialog</div>;
 }
