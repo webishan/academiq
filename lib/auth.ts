@@ -57,7 +57,7 @@ export const {
 				if (user) {
 					session.user.id = user.id;
 					session.user.email = user.email as string;
-					// session.user.role = user.roles as string;
+					session.user.role = user.role as string;
 					session.user.name = user.name as string;
 				}
 			}

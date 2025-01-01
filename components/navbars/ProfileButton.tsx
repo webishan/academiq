@@ -2,12 +2,13 @@
 import { Button } from '../ui/button';
 import { FaUser } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
+import { MdDashboard } from 'react-icons/md';
 import Link from 'next/link';
 import { logout } from '@/actions/auth-actions/authAction';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
-const ProfileButton = ({ userName, userId, image }: { userName: string; userId: string; image?: string | null }) => {
+const ProfileButton = ({ userName, userId, image, role }: { userName: string; userId: string; image?: string | null; role?: string }) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	console.log();
@@ -45,6 +46,17 @@ const ProfileButton = ({ userName, userId, image }: { userName: string; userId: 
 							<FaUser className="h-4 w-4" />
 							Profile
 						</Link>
+
+						{role === 'ADMIN' && (
+							<Link
+								href="/admin-panel/dashboard"
+								className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-muted cursor-pointer"
+								onClick={() => setIsOpen(false)}
+							>
+								<MdDashboard className="h-4 w-4" />
+								Admin Dashboard
+							</Link>
+						)}
 
 						<button
 							onClick={() => {
