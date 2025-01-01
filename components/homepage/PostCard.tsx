@@ -25,7 +25,7 @@ export default function PostCard({ post, currentUserId }: PostCardProps) {
 				))}
 			</div>
 
-			<PostActions commentCount={post._count?.comments || 0} />
+			<PostActions postId={post.id} commentCount={post._count?.comments || 0} currentUserId={currentUserId} />
 		</div>
 	);
 }
