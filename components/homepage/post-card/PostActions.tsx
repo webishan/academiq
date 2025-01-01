@@ -6,6 +6,7 @@ import { FaRegComment, FaRegBookmark } from 'react-icons/fa';
 import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import debounce from 'lodash/debounce';
+import Link from 'next/link';
 
 interface PostActionsProps {
 	postId: string;
@@ -150,8 +151,10 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 				</Button>
 			</div>
 			<Button variant="ghost" size="sm" className="hover:text-primary">
-				<FaRegComment className="h-4 w-4" />
-				<span className="ml-1 text-xs">{commentCount}</span>
+				<Link href={`/post/${postId}/#comment-section`} className="flex items-center justify-center gap-1">
+					<FaRegComment className="h-4 w-4" />
+					<span className="ml-1 text-xs">{commentCount}</span>
+				</Link>
 			</Button>
 		</div>
 	);
