@@ -22,28 +22,7 @@ export function ReportedPostCard({ post, onActionComplete }: ReportedPostCardPro
 	const router = useRouter();
 
 	const handleDelete = async () => {
-		setIsLoading(true);
-		try {
-			const response = await fetch(`/api/get-posts/${post.id}`, {
-				method: 'DELETE',
-			});
-
-			if (!response.ok) throw new Error('Failed to delete post');
-
-			toast({
-				title: 'Success',
-				description: 'Post deleted successfully',
-			});
-			onActionComplete();
-		} catch (error) {
-			toast({
-				title: 'Error',
-				description: 'Failed to delete post',
-				variant: 'destructive',
-			});
-		} finally {
-			setIsLoading(false);
-		}
+		// TODO: ISHAN -  Implement delete post
 	};
 
 	const handleKeep = async () => {
