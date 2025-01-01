@@ -94,7 +94,7 @@ export function ReportedPostCard({ post, onActionComplete }: ReportedPostCardPro
 
 			<p className="text-sm text-muted-foreground mb-4 line-clamp-2">{post.body}</p>
 
-			<div className="flex items-center gap-2 mb-4">
+			<div className="flex items-center gap-2 mb-2">
 				<Dialog>
 					<DialogTrigger asChild>
 						<Button variant="outline" size="sm">

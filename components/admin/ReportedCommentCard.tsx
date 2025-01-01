@@ -74,11 +74,15 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 	return (
 		<div className="p-4 rounded-lg shadow bg-gray-bg border">
 			<div className="flex justify-between items-start mb-4">
-				<div>
-					<Link href={`/profile/${comment.user.id}`} className="font-semibold hover:text-primary flex items-center gap-1">
-						<FaUser className="h-4 w-4" />
-						<span className="">{comment.user.name}</span>
-					</Link>
+				<div className="flex flex-col items-start justify-start">
+					<div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+						<Link href={`/profile/${comment.user.id}`} className="font-semibold text-white hover:text-primary flex items-center gap-1">
+							<FaUser className="h-4 w-4" />
+							<span className="">{comment.user.name}</span>
+						</Link>
+						<span>•</span>
+						<span>{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
+					</div>
 					<Link href={`/post/${comment.post.id}`} className="text-sm text-muted-foreground hover:text-primary block mt-1">
 						<span className="font-semibold bg-secondary px-1 py-0.5 mr-1 rounded-md text-white truncate">Post: </span>
 						{comment.post.title}
@@ -129,8 +133,7 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 			</div>
 
 			<div className="text-sm text-muted-foreground">
-				Posted {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })} • <span className="font-semibold">{comment._count.votes}</span>{' '}
-				votes
+				<span className="font-semibold">{comment._count.votes}</span> votes
 			</div>
 		</div>
 	);
