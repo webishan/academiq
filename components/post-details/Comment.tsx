@@ -13,6 +13,7 @@ import { FaReply, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import Link from 'next/link';
 import { Avatar } from '../ui/avatar';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
+import { CommentReply } from './CommentReply';
 
 const replySchema = z.object({
 	body: z.string().min(1, 'Reply cannot be empty'),
@@ -27,7 +28,7 @@ interface CommentProps {
 
 export function Comment({ comment, postId, currentUserId, onCommentUpdate }: CommentProps) {
 	const [isReplying, setIsReplying] = useState(false);
-	const [isExpanded, setIsExpanded] = useState(true);
+	const [isExpanded, setIsExpanded] = useState(false);
 	const { toast } = useToast();
 	const hasReplies = comment.children && comment.children.length > 0;
 	const [userVote, setUserVote] = useState<number>(0);
@@ -220,18 +221,7 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 				<div className="ml-14 space-y-4 border-l-2 border-gray-700 pl-4 bg-secondary/20">
 					{comment.children.map((reply: any) => (
 						<div key={reply.id} className="bg-muted/10 p-4">
-							<div className="flex gap-3">
-								<Avatar src={reply.user.image} name={reply.user.name} />
-								<div className="flex-1">
-									<div className="flex items-center gap-2 mb-2">
-										<Link href={`/profile/${reply.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
-											{reply.user.name}
-										</Link>
-										<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</span>
-									</div>
-									<p className="text-sm whitespace-pre-wrap">{reply.body}</p>
-								</div>
-							</div>
+							<CommentReply reply={reply} currentUserId={currentUserId} />
 						</div>
 					))}
 				</div>
