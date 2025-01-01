@@ -9,12 +9,13 @@ import { Textarea } from '../ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { FaReply, FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import { FaReply, FaChevronDown, FaChevronRight, FaFlag } from 'react-icons/fa';
 import Link from 'next/link';
 import { Avatar } from '../ui/avatar';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
 import { CommentReply } from './CommentReply';
 import debounce from 'lodash/debounce';
+import { ReportDialog } from '@/components/common/ReportDialog';
 
 const replySchema = z.object({
 	body: z.string().min(1, 'Reply cannot be empty'),
@@ -219,10 +220,21 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 								</Button>
 							</div>
 							{currentUserId && (
-								<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
-									<FaReply className="h-3 w-3" />
-									Reply
-								</Button>
+								<>
+									<Button variant="ghost" size="sm" onClick={() => setIsReplying(!isReplying)} className="flex items-center gap-2 hover:text-primary">
+										<FaReply className="h-3 w-3" />
+										Reply
+									</Button>
+									<ReportDialog
+										commentId={comment.id}
+										trigger={
+											<Button variant="ghost" size="sm" className="flex items-center gap-2 hover:text-yellow-500">
+												<FaFlag className="h-3 w-3" />
+												Report
+											</Button>
+										}
+									/>
+								</>
 							)}
 							{hasReplies && (
 								<Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="flex items-center gap-2 hover:text-primary">

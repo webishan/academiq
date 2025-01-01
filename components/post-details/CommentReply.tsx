@@ -8,6 +8,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
 import { useToast } from '@/hooks/use-toast';
 import debounce from 'lodash/debounce';
+import { ReportDialog } from '@/components/common/ReportDialog';
+import { FaFlag } from 'react-icons/fa';
 
 interface CommentReplyProps {
 	reply: any;
@@ -158,6 +160,17 @@ export function CommentReply({ reply, currentUserId }: CommentReplyProps) {
 						<BiSolidDownvote className="h-3 w-3" />
 						<span className="ml-1 text-xs">{downvotes}</span>
 					</Button>
+					{currentUserId && (
+						<ReportDialog
+							commentId={reply.id}
+							trigger={
+								<Button variant="ghost" size="sm" className="flex items-center gap-2 hover:text-yellow-500">
+									<FaFlag className="h-3 w-3" />
+									Report
+								</Button>
+							}
+						/>
+					)}
 				</div>
 			</div>
 		</div>
