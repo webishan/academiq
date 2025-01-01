@@ -2,8 +2,8 @@ import { PostWithUser } from '@/types/types';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { FaEdit, FaTrash, FaFlag, FaShare, FaUser, FaGraduationCap, FaChalkboardTeacher, FaBuilding, FaIdCard } from 'react-icons/fa';
+import { PostActionButtons } from './PostActionButtons';
+import { FaUser, FaGraduationCap, FaChalkboardTeacher, FaBuilding, FaIdCard } from 'react-icons/fa';
 
 interface PostHeaderProps {
 	post: PostWithUser;
@@ -21,22 +21,7 @@ export function PostHeader({ post, currentUserId }: PostHeaderProps) {
 				</Badge>
 				<div className="flex items-center gap-1">
 					<span className="text-sm text-muted-foreground mr-4">{format(new Date(post.createdAt), 'd MMMM, yyyy')}</span>
-					{isAuthor && (
-						<>
-							<Button variant="icon" size="icon" className="hover:text-blue-400 hover:bg-gray-bg">
-								<FaEdit className="h-4 w-4" />
-							</Button>
-							<Button variant="icon" size="icon" className="hover:text-red-500 hover:bg-gray-bg">
-								<FaTrash className="h-4 w-4" />
-							</Button>
-						</>
-					)}
-					<Button variant="icon" size="icon" className="hover:text-yellow-500 hover:bg-gray-bg">
-						<FaFlag className="h-4 w-4" />
-					</Button>
-					<Button variant="icon" size="icon" className="hover:text-green-400 hover:bg-gray-bg">
-						<FaShare className="h-4 w-4" />
-					</Button>
+					<PostActionButtons postId={post.id} isAuthor={isAuthor} />
 				</div>
 			</div>
 			<h1 className="text-2xl font-bold mb-4">{post.title}</h1>

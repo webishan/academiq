@@ -1,11 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { FaEdit, FaTrash, FaFlag, FaShare, FaExpand, FaUser, FaGraduationCap, FaBuilding, FaChalkboardTeacher, FaIdCard } from 'react-icons/fa';
+import { FaExpand, FaUser, FaGraduationCap, FaBuilding, FaChalkboardTeacher, FaIdCard } from 'react-icons/fa';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { PostWithUser } from '@/types/types';
 import { Badge } from '@/components/ui/badge';
+import { PostHeaderDropdown } from './PostHeaderDropdown';
 
 interface PostHeaderProps {
 	post: PostWithUser;
@@ -52,36 +51,7 @@ export function PostHeader({ post, currentUserId }: PostHeaderProps) {
 							<span className="sr-only">View full post</span>
 						</Button>
 					</Link>
-					<DropdownMenu modal={false}>
-						<DropdownMenuTrigger asChild className="outline-none">
-							<Button variant="icon" size="icon" className="hover:text-purple-400">
-								<BsThreeDotsVertical className="h-4 w-4" />
-								<span className="sr-only">More options</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-[200px]">
-							{isAuthor && (
-								<>
-									<DropdownMenuItem className="group text-white cursor-pointer">
-										<FaEdit className="h-4 w-4 mr-2 text-white group-hover:text-blue-400 transition-colors" />
-										<span className="text-white group-hover:text-blue-400 transition-colors">Edit</span>
-									</DropdownMenuItem>
-									<DropdownMenuItem className="group text-white cursor-pointer">
-										<FaTrash className="h-4 w-4 mr-2 text-white group-hover:text-red-500 transition-colors" />
-										<span className="text-white group-hover:text-red-500 transition-colors">Delete</span>
-									</DropdownMenuItem>
-								</>
-							)}
-							<DropdownMenuItem className="group text-white cursor-pointer">
-								<FaFlag className="h-4 w-4 mr-2 text-white group-hover:text-yellow-500 transition-colors" />
-								<span className="text-white group-hover:text-yellow-500 transition-colors">Report</span>
-							</DropdownMenuItem>
-							<DropdownMenuItem className="group text-white cursor-pointer">
-								<FaShare className="h-4 w-4 mr-2 text-white group-hover:text-green-400 transition-colors" />
-								<span className="text-white group-hover:text-green-400 transition-colors">Share</span>
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+					<PostHeaderDropdown postId={post.id} isAuthor={isAuthor} />
 				</div>
 			</div>
 			<div className="space-y-1">
