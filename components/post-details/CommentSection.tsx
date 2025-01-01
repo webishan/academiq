@@ -133,7 +133,7 @@ export default function CommentSection({ postId, currentUserId, currentUser }: C
 					</form>
 				</Form>
 			)}
-			<div className="flex items-center gap-2 pb-4">
+			<div className="flex items-center gap-2 pb-4" id="comment-section">
 				<FaRegComment className="h-5 w-5" />
 				<h2 className="text-xl font-semibold">Comments</h2>
 				<span className="text-sm text-muted-foreground">({getTotalCommentCount(comments)})</span>

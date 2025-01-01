@@ -12,55 +12,59 @@ export async function POST(request: Request, { params }: { params: { commentId: 
 		const userId = session.user.id;
 		const { value } = await request.json();
 
-		const existingVote = await db.commentVote.findFirst({
-			where: {
-				commentId: params.commentId,
-				userId,
-			},
-		});
+		const result = await db.$transaction(async (tx) => {
+			const existingVote = await tx.commentVote.findFirst({
+				where: {
+					commentId: params.commentId,
+					userId,
+				},
+			});
 
-		if (existingVote) {
-			if (existingVote.value === value) {
-				await db.commentVote.delete({
-					where: {
-						id: existingVote.id,
-					},
-				});
+			if (existingVote) {
+				if (existingVote.value === value) {
+					await tx.commentVote.delete({
+						where: {
+							id: existingVote.id,
+						},
+					});
+				} else {
+					await tx.commentVote.update({
+						where: {
+							id: existingVote.id,
+						},
+						data: {
+							value,
+						},
+					});
+				}
 			} else {
-				await db.commentVote.update({
-					where: {
-						id: existingVote.id,
-					},
+				await tx.commentVote.create({
 					data: {
+						commentId: params.commentId,
+						userId,
 						value,
 					},
 				});
 			}
-		} else {
-			await db.commentVote.create({
-				data: {
+
+			const upvotes = await tx.commentVote.count({
+				where: {
 					commentId: params.commentId,
-					userId,
-					value,
+					value: 1,
 				},
 			});
-		}
 
-		const upvotes = await db.commentVote.count({
-			where: {
-				commentId: params.commentId,
-				value: 1,
-			},
+			const downvotes = await tx.commentVote.count({
+				where: {
+					commentId: params.commentId,
+					value: -1,
+				},
+			});
+
+			return { upvotes, downvotes };
 		});
 
-		const downvotes = await db.commentVote.count({
-			where: {
-				commentId: params.commentId,
-				value: -1,
-			},
-		});
-
-		return NextResponse.json({ upvotes, downvotes });
+		return NextResponse.json(result);
 	} catch (error) {
 		console.error('Error handling vote:', error);
 		return NextResponse.json({ error: 'Failed to process vote' }, { status: 500 });

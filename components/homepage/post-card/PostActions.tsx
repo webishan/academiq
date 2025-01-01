@@ -3,8 +3,10 @@
 import { Button } from '@/components/ui/button';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
 import { FaRegComment, FaRegBookmark } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import debounce from 'lodash/debounce';
+import Link from 'next/link';
 
 interface PostActionsProps {
 	postId: string;
@@ -12,10 +14,22 @@ interface PostActionsProps {
 	currentUserId?: string;
 }
 
+interface VoteResponse {
+	upvotes: number;
+	downvotes: number;
+}
+
+interface VoteContext {
+	previousVote: number;
+	previousUpvotes: number;
+	previousDownvotes: number;
+}
+
 export function PostActions({ postId, commentCount, currentUserId }: PostActionsProps) {
 	const [userVote, setUserVote] = useState<number>(0);
 	const [upvotes, setUpvotes] = useState<number>(0);
 	const [downvotes, setDownvotes] = useState<number>(0);
+	const [isVoting, setIsVoting] = useState<boolean>(false);
 	const { toast } = useToast();
 
 	useEffect(() => {
@@ -37,7 +51,70 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 		}
 	};
 
-	const handleVote = async (value: number) => {
+	const submitVote = async (value: number): Promise<VoteResponse> => {
+		const response = await fetch(`/api/get-posts/${postId}/vote`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ value }),
+		});
+		if (!response.ok) throw new Error('Failed to vote');
+		return response.json();
+	};
+
+	const handleOptimisticUpdate = (value: number): VoteContext => {
+		const previousVote = userVote;
+		const previousUpvotes = upvotes;
+		const previousDownvotes = downvotes;
+
+		if (value === previousVote) {
+			setUserVote(0);
+			setUpvotes(value === 1 ? upvotes - 1 : upvotes);
+			setDownvotes(value === -1 ? downvotes - 1 : downvotes);
+		} else {
+			setUserVote(value);
+			if (value === 1) {
+				setUpvotes(upvotes + 1);
+				if (previousVote === -1) setDownvotes(downvotes - 1);
+			} else {
+				setDownvotes(downvotes + 1);
+				if (previousVote === 1) setUpvotes(upvotes - 1);
+			}
+		}
+
+		return { previousVote, previousUpvotes, previousDownvotes };
+	};
+
+	const handleError = (context: VoteContext) => {
+		setUserVote(context.previousVote);
+		setUpvotes(context.previousUpvotes);
+		setDownvotes(context.previousDownvotes);
+		toast({
+			title: 'Error',
+			description: 'Failed to process vote',
+			variant: 'destructive',
+		});
+	};
+
+	const debouncedVote = useCallback(
+		debounce(async (value: number) => {
+			if (!isVoting) {
+				setIsVoting(true);
+				const context = handleOptimisticUpdate(value);
+				try {
+					const result = await submitVote(value);
+					setUpvotes(result.upvotes);
+					setDownvotes(result.downvotes);
+				} catch (error) {
+					handleError(context);
+				} finally {
+					setIsVoting(false);
+				}
+			}
+		}, 300),
+		[isVoting, userVote, upvotes, downvotes],
+	);
+
+	const handleVote = (value: number) => {
 		if (!currentUserId) {
 			toast({
 				title: 'Authentication required',
@@ -46,58 +123,39 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 			});
 			return;
 		}
-
-		try {
-			const response = await fetch(`/api/get-posts/${postId}/vote`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ value }),
-			});
-
-			if (!response.ok) throw new Error('Failed to vote');
-
-			const data = await response.json();
-			setUpvotes(data.upvotes);
-			setDownvotes(data.downvotes);
-			setUserVote(value === userVote ? 0 : value);
-		} catch (error) {
-			console.error('Error voting:', error);
-			toast({
-				title: 'Error',
-				description: 'Failed to process vote',
-				variant: 'destructive',
-			});
-		}
+		debouncedVote(value);
 	};
 
 	return (
-		<div className="border-t px-4 py-2">
-			<div className="flex items-center gap-2">
-				<div className="flex items-center">
-					<Button
-						variant="icon"
-						size="icon"
-						className={`hover:text-green-400 ${userVote === 1 ? 'text-green-400' : ''}`}
-						onClick={() => handleVote(1)}
-					>
-						<BiSolidUpvote />
-					</Button>
-					<span className="text-sm font-medium">{upvotes}</span>
-					<Button variant="icon" size="icon" className={`hover:text-red-400 ${userVote === -1 ? 'text-red-400' : ''}`} onClick={() => handleVote(-1)}>
-						<BiSolidDownvote />
-					</Button>
-					<span className="text-sm font-medium">{downvotes}</span>
-				</div>
-				<div className="flex items-center gap-1 ml-2">
-					<FaRegComment className="h-4 w-4" />
-					<span className="text-sm text-muted-foreground">{commentCount}</span>
-				</div>
-				<Button variant="icon" size="icon" className="hover:text-red-400">
-					<FaRegBookmark />
+		<div className="flex items-center gap-4 px-4 py-2">
+			<div className="flex items-center gap-1">
+				<Button
+					variant="ghost"
+					size="sm"
+					className={`hover:text-green-400 ${userVote === 1 ? 'text-green-400' : ''}`}
+					onClick={() => handleVote(1)}
+					disabled={isVoting}
+				>
+					<BiSolidUpvote className="h-4 w-4" />
+					<span className="ml-1 text-xs">{upvotes}</span>
+				</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					className={`hover:text-red-400 ${userVote === -1 ? 'text-red-400' : ''}`}
+					onClick={() => handleVote(-1)}
+					disabled={isVoting}
+				>
+					<BiSolidDownvote className="h-4 w-4" />
+					<span className="ml-1 text-xs">{downvotes}</span>
 				</Button>
 			</div>
+			<Button variant="ghost" size="sm" className="hover:text-primary">
+				<Link href={`/post/${postId}/#comment-section`} className="flex items-center justify-center gap-1">
+					<FaRegComment className="h-4 w-4" />
+					<span className="ml-1 text-xs">{commentCount}</span>
+				</Link>
+			</Button>
 		</div>
 	);
 }
