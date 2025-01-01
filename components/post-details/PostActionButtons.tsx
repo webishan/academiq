@@ -15,6 +15,8 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { ReportDialog } from '@/components/common/ReportDialog';
+import { ShareDialog } from '@/components/common/ShareDialog';
 
 interface PostActionButtonsProps {
 	postId: string;
@@ -78,12 +80,22 @@ export function PostActionButtons({ postId, isAuthor }: PostActionButtonsProps) 
 					</AlertDialog>
 				</>
 			)}
-			<Button variant="icon" size="icon" className="hover:text-yellow-500 hover:bg-gray-bg">
-				<FaFlag className="h-4 w-4" />
-			</Button>
-			<Button variant="icon" size="icon" className="hover:text-green-400 hover:bg-gray-bg">
-				<FaShare className="h-4 w-4" />
-			</Button>
+			<ReportDialog
+				postId={postId}
+				trigger={
+					<Button variant="icon" size="icon" className="hover:text-yellow-500 hover:bg-gray-bg">
+						<FaFlag className="h-4 w-4" />
+					</Button>
+				}
+			/>
+			<ShareDialog
+				postId={postId}
+				trigger={
+					<Button variant="icon" size="icon" className="hover:text-green-400 hover:bg-gray-bg">
+						<FaShare className="h-4 w-4" />
+					</Button>
+				}
+			/>
 		</>
 	);
 }
