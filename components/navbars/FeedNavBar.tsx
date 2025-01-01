@@ -11,7 +11,7 @@ import SearchBar from './SearchBar';
 
 export const FeedNavbar = async () => {
 	const session = await auth();
-	console.log('😂', session?.user?.image);
+	// console.log('🤣', session?.user?.role);
 	return (
 		<nav className="w-full bg-background shadow-sm flex flex-row items-center justify-center border-b fixed top-0 left-0 right-0 z-50">
 			<div className="container flex flex-row h-16 w-full items-center justify-between px-4 md:px-6">
@@ -21,8 +21,13 @@ export const FeedNavbar = async () => {
 				<SearchBar />
 				{session?.user ? (
 					<div className="hidden gap-2 md:flex items-center justify-center">
-						<CreatePostButton />
-						<ProfileButton userName={session.user.name || ''} userId={session.user.id || ''} image={session.user.image ? session.user.image : null} />
+						{session.user.role !== 'ADMIN' && <CreatePostButton />}
+						<ProfileButton
+							userName={session.user.name || ''}
+							userId={session.user.id || ''}
+							image={session.user.image ? session.user.image : null}
+							role={session.user.role}
+						/>
 					</div>
 				) : (
 					<div className="hidden gap-2 md:flex">
@@ -51,7 +56,12 @@ export const FeedNavbar = async () => {
 							<div className="grid gap-4 p-4">
 								<p>{session?.user?.name}</p>
 								<p>{session?.user?.email}</p>
-								<ProfileButton userName={session.user.name || ''} userId={session.user.id || ''} image={session.user.image ? session.user.image : null} />
+								<ProfileButton
+									userName={session.user.name || ''}
+									userId={session.user.id || ''}
+									image={session.user.image ? session.user.image : null}
+									role={session.user.role}
+								/>
 							</div>
 						) : (
 							<div className="grid gap-4 p-4">
