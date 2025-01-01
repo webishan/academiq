@@ -1,8 +1,9 @@
 import { PostWithUser } from '@/types/types';
 import { PostHeader } from './PostHeader';
 import { PostContent } from './PostContent';
-import { PostFooter } from './PostFooter';
+import { PostActions } from '../homepage/post-card/PostActions';
 import CommentSection from './CommentSection';
+
 interface PostDetailsProps {
 	post: PostWithUser;
 	currentUserId?: string;
@@ -18,7 +19,9 @@ export function PostDetails({ post, currentUserId, currentUser }: PostDetailsPro
 		<div className="w-full bg-transparent">
 			<PostHeader post={post} currentUserId={currentUserId} />
 			<PostContent post={post} />
-			<PostFooter post={post} currentUserId={currentUserId} />
+			<div className="mx-6">
+				<PostActions postId={post.id} commentCount={post._count?.comments || 0} currentUserId={currentUserId} />
+			</div>
 			<CommentSection postId={post.id} currentUserId={currentUserId} currentUser={currentUser} />
 		</div>
 	);
