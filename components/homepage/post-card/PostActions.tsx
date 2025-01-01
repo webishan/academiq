@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
-import { FaRegComment, FaRegBookmark } from 'react-icons/fa';
+import { FaRegComment, FaRegBookmark, FaBookmark } from 'react-icons/fa';
 import { useEffect, useState, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import debounce from 'lodash/debounce';
@@ -30,11 +30,14 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 	const [upvotes, setUpvotes] = useState<number>(0);
 	const [downvotes, setDownvotes] = useState<number>(0);
 	const [isVoting, setIsVoting] = useState<boolean>(false);
+	const [isBookmarked, setIsBookmarked] = useState(false);
+	const [isBookmarking, setIsBookmarking] = useState(false);
 	const { toast } = useToast();
 
 	useEffect(() => {
 		if (currentUserId) {
 			fetchVotes();
+			checkBookmarkStatus();
 		}
 	}, [postId, currentUserId]);
 
@@ -126,6 +129,54 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 		debouncedVote(value);
 	};
 
+	const checkBookmarkStatus = async () => {
+		try {
+			const response = await fetch(`/api/get-posts/${postId}/bookmark`);
+			if (!response.ok) throw new Error('Failed to fetch bookmark status');
+			const data = await response.json();
+			setIsBookmarked(data.bookmarked);
+		} catch (error) {
+			console.error('Error fetching bookmark status:', error);
+		}
+	};
+
+	const handleBookmark = async () => {
+		if (!currentUserId) {
+			toast({
+				title: 'Authentication required',
+				description: 'Please login to bookmark posts',
+				variant: 'destructive',
+			});
+			return;
+		}
+
+		if (isBookmarking) return;
+
+		setIsBookmarking(true);
+		const previousState = isBookmarked;
+		setIsBookmarked(!isBookmarked);
+
+		try {
+			const response = await fetch(`/api/get-posts/${postId}/bookmark`, {
+				method: 'POST',
+			});
+
+			if (!response.ok) throw new Error('Failed to bookmark');
+
+			const data = await response.json();
+			setIsBookmarked(data.bookmarked);
+		} catch (error) {
+			setIsBookmarked(previousState);
+			toast({
+				title: 'Error',
+				description: 'Failed to bookmark post',
+				variant: 'destructive',
+			});
+		} finally {
+			setIsBookmarking(false);
+		}
+	};
+
 	return (
 		<div className="flex items-center justify-between px-4 py-2">
 			<div className="flex items-center gap-1">
@@ -157,8 +208,14 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 						<span className="ml-1 text-xs">{commentCount}</span>
 					</Link>
 				</Button>
-				<Button variant="ghost" size="sm" className="hover:text-primary">
-					<FaRegBookmark className="h-4 w-4" />
+				<Button
+					variant="ghost"
+					size="sm"
+					className={`hover:text-primary ${isBookmarked ? 'text-primary' : ''}`}
+					onClick={handleBookmark}
+					disabled={isBookmarking}
+				>
+					{isBookmarked ? <FaBookmark className="h-4 w-4" /> : <FaRegBookmark className="h-4 w-4" />}
 				</Button>
 			</div>
 		</div>
