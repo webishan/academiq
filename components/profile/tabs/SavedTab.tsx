@@ -34,11 +34,11 @@ export const SavedTab = ({ userId }: SavedTabProps) => {
 	if (loading) return <div>Loading saved posts...</div>;
 
 	return (
-		<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		<div className="grid gap-4 grid-cols-1">
 			{savedPosts.length === 0 ? (
 				<p className="text-muted-foreground col-span-full text-center">No saved posts</p>
 			) : (
-				savedPosts.map((post) => <PostCard key={post.id} post={post} />)
+				savedPosts.map((post) => <PostCard key={post.id} post={post} currentUserId={userId} />)
 			)}
 		</div>
 	);
