@@ -32,7 +32,7 @@ export function PostHeaderDropdown({ postId, isAuthor }: PostHeaderDropdownProps
 			});
 
 			router.refresh();
-			router.push('/');
+			router.replace('/');
 		} catch (error) {
 			console.error('Error deleting post:', error);
 			toast({

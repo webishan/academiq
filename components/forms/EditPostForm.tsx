@@ -64,10 +64,11 @@ export function EditPostForm({ post }: EditPostFormProps) {
 			toast({
 				title: 'Success',
 				description: 'Post updated successfully',
+				variant: 'success',
 			});
 
 			router.refresh();
-			router.push(`/post/${post.id}`);
+			router.replace(`/post/${post.id}`);
 		} catch (error) {
 			console.error('Error updating post:', error);
 			toast({
