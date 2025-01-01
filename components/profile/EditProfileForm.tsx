@@ -16,9 +16,7 @@ const editProfileSchema = z
 		name: z.string().min(2, {
 			message: 'Full Name must be at least 2 characters.',
 		}),
-		department: z.string().min(1, {
-			message: 'Department is required',
-		}),
+		department: z.string().optional(),
 		studentId: z.string().optional(),
 		facultyInitials: z.string().optional(),
 		facultyPosition: z.string().optional(),
