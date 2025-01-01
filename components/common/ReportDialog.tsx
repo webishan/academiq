@@ -2,15 +2,7 @@
 
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import {
-	AlertDialog,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -23,6 +15,7 @@ interface ReportDialogProps {
 export function ReportDialog({ postId, commentId, trigger }: ReportDialogProps) {
 	const [reason, setReason] = useState('');
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [open, setOpen] = useState(false);
 	const { toast } = useToast();
 
 	const handleSubmit = async () => {
@@ -54,6 +47,7 @@ export function ReportDialog({ postId, commentId, trigger }: ReportDialogProps) 
 				description: 'Report submitted successfully',
 			});
 			setReason('');
+			setOpen(false);
 		} catch (error) {
 			console.error('Error:', error);
 			toast({
@@ -67,23 +61,29 @@ export function ReportDialog({ postId, commentId, trigger }: ReportDialogProps) 
 	};
 
 	return (
-		<AlertDialog>
-			<AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle>Report {postId ? 'Post' : 'Comment'}</AlertDialogTitle>
-					<AlertDialogDescription>Please provide a reason for reporting this {postId ? 'post' : 'comment'}</AlertDialogDescription>
-				</AlertDialogHeader>
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger asChild>{trigger}</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Report {postId ? 'Post' : 'Comment'}</DialogTitle>
+					<DialogDescription>Please provide a reason for reporting this {postId ? 'post' : 'comment'}</DialogDescription>
+				</DialogHeader>
 				<Textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Enter your reason..." className="min-h-[100px]" />
-				<AlertDialogFooter>
-					<Button variant="outline" onClick={() => setReason('')}>
+				<DialogFooter className="flex items-center gap-2">
+					<Button
+						variant="outline"
+						onClick={() => {
+							setReason('');
+							setOpen(false);
+						}}
+					>
 						Cancel
 					</Button>
 					<Button onClick={handleSubmit} disabled={isSubmitting}>
 						{isSubmitting ? 'Submitting...' : 'Submit Report'}
 					</Button>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 }
