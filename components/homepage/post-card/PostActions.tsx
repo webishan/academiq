@@ -127,7 +127,7 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 	};
 
 	return (
-		<div className="flex items-center gap-4 px-4 py-2">
+		<div className="flex items-center justify-between px-4 py-2">
 			<div className="flex items-center gap-1">
 				<Button
 					variant="ghost"
@@ -150,12 +150,17 @@ export function PostActions({ postId, commentCount, currentUserId }: PostActions
 					<span className="ml-1 text-xs">{downvotes}</span>
 				</Button>
 			</div>
-			<Button variant="ghost" size="sm" className="hover:text-primary">
-				<Link href={`/post/${postId}/#comment-section`} className="flex items-center justify-center gap-1">
-					<FaRegComment className="h-4 w-4" />
-					<span className="ml-1 text-xs">{commentCount}</span>
-				</Link>
-			</Button>
+			<div className="flex items-center gap-2">
+				<Button variant="ghost" size="sm" className="hover:text-primary">
+					<Link href={`/post/${postId}/#comment-section`} className="flex items-center justify-center gap-1">
+						<FaRegComment className="h-4 w-4" />
+						<span className="ml-1 text-xs">{commentCount}</span>
+					</Link>
+				</Button>
+				<Button variant="ghost" size="sm" className="hover:text-primary">
+					<FaRegBookmark className="h-4 w-4" />
+				</Button>
+			</div>
 		</div>
 	);
 }
