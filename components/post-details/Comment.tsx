@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { Avatar } from '../ui/avatar';
 import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
 import { CommentReply } from './CommentReply';
+import debounce from 'lodash/debounce';
 
 const replySchema = z.object({
 	body: z.string().min(1, 'Reply cannot be empty'),
@@ -26,9 +27,21 @@ interface CommentProps {
 	onCommentUpdate: () => void;
 }
 
+interface VoteResponse {
+	upvotes: number;
+	downvotes: number;
+}
+
+interface VoteContext {
+	previousVote: number;
+	previousUpvotes: number;
+	previousDownvotes: number;
+}
+
 export function Comment({ comment, postId, currentUserId, onCommentUpdate }: CommentProps) {
 	const [isReplying, setIsReplying] = useState(false);
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isVoting, setIsVoting] = useState(false);
 	const { toast } = useToast();
 	const hasReplies = comment.children && comment.children.length > 0;
 	const [userVote, setUserVote] = useState<number>(0);
@@ -61,7 +74,70 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 		}
 	};
 
-	const handleVote = async (value: number) => {
+	const submitVote = async (value: number): Promise<VoteResponse> => {
+		const response = await fetch(`/api/comments/${comment.id}/vote`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ value }),
+		});
+		if (!response.ok) throw new Error('Failed to vote');
+		return response.json();
+	};
+
+	const handleOptimisticUpdate = (value: number): VoteContext => {
+		const previousVote = userVote;
+		const previousUpvotes = upvotes;
+		const previousDownvotes = downvotes;
+
+		if (value === previousVote) {
+			setUserVote(0);
+			setUpvotes(value === 1 ? upvotes - 1 : upvotes);
+			setDownvotes(value === -1 ? downvotes - 1 : downvotes);
+		} else {
+			setUserVote(value);
+			if (value === 1) {
+				setUpvotes(upvotes + 1);
+				if (previousVote === -1) setDownvotes(downvotes - 1);
+			} else {
+				setDownvotes(downvotes + 1);
+				if (previousVote === 1) setUpvotes(upvotes - 1);
+			}
+		}
+
+		return { previousVote, previousUpvotes, previousDownvotes };
+	};
+
+	const handleError = (context: VoteContext) => {
+		setUserVote(context.previousVote);
+		setUpvotes(context.previousUpvotes);
+		setDownvotes(context.previousDownvotes);
+		toast({
+			title: 'Error',
+			description: 'Failed to process vote',
+			variant: 'destructive',
+		});
+	};
+
+	const debouncedVote = useCallback(
+		debounce(async (value: number) => {
+			if (!isVoting) {
+				setIsVoting(true);
+				const context = handleOptimisticUpdate(value);
+				try {
+					const result = await submitVote(value);
+					setUpvotes(result.upvotes);
+					setDownvotes(result.downvotes);
+				} catch (error) {
+					handleError(context);
+				} finally {
+					setIsVoting(false);
+				}
+			}
+		}, 300),
+		[isVoting, userVote, upvotes, downvotes],
+	);
+
+	const handleVote = (value: number) => {
 		if (!currentUserId) {
 			toast({
 				title: 'Authentication required',
@@ -70,30 +146,7 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 			});
 			return;
 		}
-
-		try {
-			const response = await fetch(`/api/comments/${comment.id}/vote`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ value }),
-			});
-
-			if (!response.ok) throw new Error('Failed to vote');
-
-			const data = await response.json();
-			setUpvotes(data.upvotes);
-			setDownvotes(data.downvotes);
-			setUserVote(value === userVote ? 0 : value);
-		} catch (error) {
-			console.error('Error voting:', error);
-			toast({
-				title: 'Error',
-				description: 'Failed to process vote',
-				variant: 'destructive',
-			});
-		}
+		debouncedVote(value);
 	};
 
 	const onSubmitReply = async (values: z.infer<typeof replySchema>) => {
@@ -149,6 +202,7 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 									size="sm"
 									className={`hover:text-green-400 ${userVote === 1 ? 'text-green-400' : ''}`}
 									onClick={() => handleVote(1)}
+									disabled={isVoting}
 								>
 									<BiSolidUpvote className="h-3 w-3" />
 									<span className="ml-1 text-xs">{upvotes}</span>
@@ -158,6 +212,7 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 									size="sm"
 									className={`hover:text-red-400 ${userVote === -1 ? 'text-red-400' : ''}`}
 									onClick={() => handleVote(-1)}
+									disabled={isVoting}
 								>
 									<BiSolidDownvote className="h-3 w-3" />
 									<span className="ml-1 text-xs">{downvotes}</span>
