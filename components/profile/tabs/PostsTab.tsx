@@ -38,7 +38,7 @@ export const PostsTab = ({ userId }: PostsTabProps) => {
 			{posts.length === 0 ? (
 				<p className="text-muted-foreground col-span-full text-center">No posts yet</p>
 			) : (
-				posts.map((post) => <PostCard key={post.id} post={post} />)
+				posts.map((post) => <PostCard key={post.id} post={post} currentUserId={userId} />)
 			)}
 		</div>
 	);
