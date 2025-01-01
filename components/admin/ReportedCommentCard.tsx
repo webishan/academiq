@@ -19,8 +19,30 @@ export function ReportedCommentCard({ comment, onActionComplete }: ReportedComme
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 
+	// TODO: ISHAN - Implement delete comment
 	const handleDelete = async () => {
-		// TODO: ISHAN -  Implement delete comment
+		setIsLoading(true);
+		try {
+			const response = await fetch(`/api/comments/${comment.id}`, {
+				method: 'DELETE',
+			});
+
+			if (!response.ok) throw new Error('Failed to delete comment');
+
+			toast({
+				title: 'Success',
+				description: 'Comment deleted successfully',
+			});
+			onActionComplete();
+		} catch (error) {
+			toast({
+				title: 'Error',
+				description: 'Failed to delete comment',
+				variant: 'destructive',
+			});
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleKeep = async () => {
