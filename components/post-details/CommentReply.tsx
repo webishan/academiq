@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import debounce from 'lodash/debounce';
 import { ReportDialog } from '@/components/common/ReportDialog';
 import { FaFlag } from 'react-icons/fa';
+import { Badge } from '../ui/badge';
 
 interface CommentReplyProps {
 	reply: any;
@@ -136,6 +137,9 @@ export function CommentReply({ reply, currentUserId }: CommentReplyProps) {
 					<Link href={`/profile/${reply.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
 						{reply.user.name}
 					</Link>
+					<Badge variant="dark" className="text-[10px] rounded-full text-muted-foreground">
+						{reply.user.role}
+					</Badge>
 					<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</span>
 				</div>
 				<p className="text-sm whitespace-pre-wrap mb-2">{reply.body}</p>

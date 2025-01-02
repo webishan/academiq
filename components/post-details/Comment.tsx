@@ -16,6 +16,7 @@ import { BiSolidUpvote, BiSolidDownvote } from 'react-icons/bi';
 import { CommentReply } from './CommentReply';
 import debounce from 'lodash/debounce';
 import { ReportDialog } from '@/components/common/ReportDialog';
+import { Badge } from '@/components/ui/badge';
 
 const replySchema = z.object({
 	body: z.string().min(1, 'Reply cannot be empty'),
@@ -193,6 +194,9 @@ export function Comment({ comment, postId, currentUserId, onCommentUpdate }: Com
 							<Link href={`/profile/${comment.user.id}`} className="font-semibold text-accent hover:text-secondary transition-colors">
 								{comment.user.name}
 							</Link>
+							<Badge variant="dark" className="text-[10px] rounded-full text-muted-foreground">
+								{comment.user.role}
+							</Badge>
 							<span className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</span>
 						</div>
 						<p className="text-sm mb-3 whitespace-pre-wrap">{comment.body}</p>
