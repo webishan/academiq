@@ -51,9 +51,7 @@ export default function CommentSection({ postId, currentUserId, currentUser }: C
 			const response = await fetch(`/api/get-posts/${postId}/comment`);
 			if (!response.ok) throw new Error('Failed to fetch comments');
 			const data = await response.json();
-			console.log('💖', data);
 			setComments(data);
-			// console.log('💖', comments);
 		} catch (error) {
 			console.error('Error fetching comments:', error);
 			toast({
