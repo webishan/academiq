@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { InfoTab } from './tabs/InfoTab';
 import { PostsTab } from './tabs/PostsTab';
 import { SavedTab } from './tabs/SavedTab';
+import { Loader } from '@/components/common/Loader';
 
 export const OwnProfile = ({ userId }: { userId: string }) => {
 	const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -30,7 +31,7 @@ export const OwnProfile = ({ userId }: { userId: string }) => {
 		fetchProfile();
 	}, [userId]);
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <Loader />;
 	if (!profile) return <div>Failed to load profile</div>;
 
 	return (

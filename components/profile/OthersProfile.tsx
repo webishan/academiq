@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { UserProfile } from '@/types/types';
 import Image from 'next/image';
 import { PostsTab } from './tabs/PostsTab';
+import { Loader } from '../common/Loader';
 
 export const OthersProfile = ({ userId }: { userId: string }) => {
 	const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -28,9 +29,7 @@ export const OthersProfile = ({ userId }: { userId: string }) => {
 		fetchProfile();
 	}, [userId]);
 
-	if (loading) {
-		return <div>Loading...</div>;
-	}
+	if (loading) return <Loader />;
 
 	if (!profile) {
 		return <div>Failed to load profile</div>;
