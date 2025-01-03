@@ -72,3 +72,4 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 		</main>
 	);
 }
+// db trigger
