@@ -28,13 +28,6 @@ export function ShareDialog({ postId, trigger }: ShareDialogProps) {
 		}
 	};
 
-	// const shareLinks = {
-	// 	twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}`,
-	// 	facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`,
-	// 	whatsapp: `https://wa.me/?text=${encodeURIComponent(postUrl)}`,
-	// 	linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}`,
-	// };
-
 	return (
 		<Dialog>
 			<DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -50,20 +43,6 @@ export function ShareDialog({ postId, trigger }: ShareDialogProps) {
 						<FaLink className="h-4 w-4" />
 						Copy Link
 					</Button>
-					{/* <div className="flex justify-between">
-						<Button variant="outline" className="flex-1 mx-1 hover:text-blue-400" onClick={() => window.open(shareLinks.twitter, '_blank')}>
-							<FaTwitter className="h-5 w-5" />
-						</Button>
-						<Button variant="outline" className="flex-1 mx-1 hover:text-blue-600" onClick={() => window.open(shareLinks.facebook, '_blank')}>
-							<FaFacebook className="h-5 w-5" />
-						</Button>
-						<Button variant="outline" className="flex-1 mx-1 hover:text-green-500" onClick={() => window.open(shareLinks.whatsapp, '_blank')}>
-							<FaWhatsapp className="h-5 w-5" />
-						</Button>
-						<Button variant="outline" className="flex-1 mx-1 hover:text-blue-700" onClick={() => window.open(shareLinks.linkedin, '_blank')}>
-							<FaLinkedin className="h-5 w-5" />
-						</Button>
-					</div> */}
 				</div>
 			</DialogContent>
 		</Dialog>
