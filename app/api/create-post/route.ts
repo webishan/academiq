@@ -9,6 +9,14 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Helper function to clean filename
+const cleanFileName = (fileName: string) => {
+	return fileName
+		.trim()
+		.replace(/\s+/g, '_')
+		.replace(/[^a-zA-Z0-9._-]/g, '');
+};
+
 export async function POST(req: Request) {
 	try {
 		const session = await auth();
@@ -28,7 +36,7 @@ export async function POST(req: Request) {
 		const hasLink = formData.get('hasLink') === 'true';
 		const files = formData.getAll('materials') as File[];
 
-		// Normalize topics: trim whitespace and convert to lowercase
+		// Normalize topics
 		const topics = rawTopics.map((topic: string) => topic.trim().toLowerCase());
 
 		// Upload files to Cloudinary
@@ -37,19 +45,42 @@ export async function POST(req: Request) {
 			for (const file of files) {
 				const bytes = await file.arrayBuffer();
 				const buffer = Buffer.from(bytes);
-
-				// Convert buffer to base64
 				const base64Data = buffer.toString('base64');
 				const fileType = file.type;
+
+				// Determine resource type based on file type
+				const resourceType = fileType === 'application/pdf' || fileType.includes('document') ? ('auto' as const) : ('image' as const);
+
 				const dataURI = `data:${fileType};base64,${base64Data}`;
 
-				// Upload to Cloudinary
-				const result = await cloudinary.uploader.upload(dataURI, {
-					resource_type: 'auto',
-					folder: 'academiq',
-				});
+				// Upload to Cloudinary with proper resource type
+				if (fileType === 'application/pdf') {
+					const cleanName = cleanFileName(file.name).replace(/\.pdf$/i, '') + '.pdf'; // Ensure .pdf extension
 
-				materialUrls.push(result.secure_url);
+					// Special handling for PDFs to enforce download
+					const result = await cloudinary.uploader.upload(dataURI, {
+						resource_type: 'raw', // Raw file type for non-image files
+						folder: 'academiq',
+						public_id: `${Date.now()}-${cleanName}`, // Include .pdf in public_id
+						use_filename: true, // Preserve original filename
+						unique_filename: false, // Prevent random strings in filename
+						flags: 'attachment',
+					});
+					materialUrls.push(result.secure_url);
+				} else {
+					// Handle other file types (images and documents)
+					const cleanName = cleanFileName(file.name).replace(/\.[^/.]+$/, '');
+
+					const result = await cloudinary.uploader.upload(dataURI, {
+						resource_type: 'auto',
+						folder: 'academiq',
+						public_id: `${Date.now()}-${cleanName}`,
+						format: fileType.includes('document') ? 'docx' : undefined,
+						use_filename: true,
+						unique_filename: true,
+					});
+					materialUrls.push(result.secure_url);
+				}
 			}
 		}
 

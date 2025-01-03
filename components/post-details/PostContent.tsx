@@ -1,10 +1,27 @@
 import { PostWithUser } from '@/types/types';
 import { Badge } from '../ui/badge';
-import { FaFileAlt } from 'react-icons/fa';
+import { FaFileAlt, FaFilePdf, FaFileWord, FaFileImage } from 'react-icons/fa';
 
 interface PostContentProps {
 	post: PostWithUser;
 }
+
+const getFileIcon = (url: string) => {
+	if (url.match(/\.(pdf)$/i)) {
+		return <FaFilePdf className="text-red-500" size={20} />;
+	} else if (url.match(/\.(docx|doc)$/i)) {
+		return <FaFileWord className="text-blue-500" size={20} />;
+	} else if (url.match(/\.(jpg|jpeg|png)$/i)) {
+		return <FaFileImage className="text-green-500" size={20} />;
+	}
+	return <FaFileAlt className="text-gray-500" size={20} />;
+};
+
+const getFileName = (url: string) => {
+	const parts = url.split('/');
+	const fileName = parts[parts.length - 1];
+	return fileName.split('?')[0];
+};
 
 export function PostContent({ post }: PostContentProps) {
 	return (
@@ -14,19 +31,22 @@ export function PostContent({ post }: PostContentProps) {
 			</div>
 
 			{post.materials && post.materials.length > 0 && (
-				<div className="p-4 bg-muted/20 rounded-lg">
+				<div className="mt-6 p-4 bg-muted/20 rounded-lg">
 					<h3 className="text-lg font-semibold mb-3">Attachments</h3>
-					<div className="grid gap-2">
+					<div className="grid gap-3">
 						{post.materials.map((url: string, index: number) => (
 							<a
 								key={index}
 								href={url}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="flex items-center gap-2 p-2 bg-background/50 rounded hover:bg-background/80 transition-colors"
+								className="flex items-center gap-3 p-3 bg-background/50 rounded-md hover:bg-background/80 transition-colors group"
 							>
-								<FaFileAlt className="text-primary" />
-								<span className="text-primary">Attachment {index + 1}</span>
+								{getFileIcon(url)}
+								<div className="flex flex-col">
+									<span className="text-sm font-medium group-hover:text-primary transition-colors">{getFileName(url)}</span>
+									<span className="text-xs text-muted-foreground">Click to view or download</span>
+								</div>
 							</a>
 						))}
 					</div>
