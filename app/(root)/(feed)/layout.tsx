@@ -1,5 +1,6 @@
 import FilterBar from '@/components/navbars/FilterBar';
 import { FeedNavbar } from '@/components/navbars/FeedNavBar';
+import TrendingPosts from '@/components/navbars/TrendingPosts';
 
 const FeedLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
@@ -7,7 +8,8 @@ const FeedLayout = ({ children }: { children: React.ReactNode }) => {
 			<FeedNavbar />
 			<div className="flex flex-row pt-16">
 				<FilterBar />
-				<div className="flex-1 ml-64 p-6">{children}</div>
+				<div className="flex-1 mx-64 p-6">{children}</div>
+				<TrendingPosts />
 			</div>
 		</main>
 	);
