@@ -108,7 +108,7 @@ export default function CreatePostForm() {
 					description: 'Post created successfully!',
 					variant: 'success',
 				});
-				router.push('/');
+				router.replace('/');
 			} else {
 				toast({
 					title: 'Error',

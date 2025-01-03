@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { PostWithUser } from '@/types/types';
 import PostCard from '@/components/homepage/PostCard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PostCardSkeleton } from '@/components/common/PostCardSkeleton';
 
 interface PostsTabProps {
 	userId: string;
@@ -31,7 +33,14 @@ export const PostsTab = ({ userId }: PostsTabProps) => {
 		fetchPosts();
 	}, [userId]);
 
-	if (loading) return <div>Loading posts...</div>;
+	if (loading)
+		return (
+			<div className="grid gap-4 grid-cols-1">
+				<PostCardSkeleton />
+				<PostCardSkeleton />
+				<PostCardSkeleton />
+			</div>
+		);
 
 	return (
 		<div className="grid gap-4 grid-cols-1">
