@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { PostWithUser } from '@/types/types';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { FaUser, FaFire } from 'react-icons/fa';
+import { FaFire } from 'react-icons/fa';
 import { Badge } from '../ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 

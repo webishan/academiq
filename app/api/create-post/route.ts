@@ -9,7 +9,6 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Helper function to clean filename
 const cleanFileName = (fileName: string) => {
 	return fileName
 		.trim()
@@ -36,10 +35,8 @@ export async function POST(req: Request) {
 		const hasLink = formData.get('hasLink') === 'true';
 		const files = formData.getAll('materials') as File[];
 
-		// Normalize topics
 		const topics = rawTopics.map((topic: string) => topic.trim().toLowerCase());
 
-		// Upload files to Cloudinary
 		const materialUrls = [];
 		if (files.length > 0) {
 			for (const file of files) {
@@ -48,27 +45,23 @@ export async function POST(req: Request) {
 				const base64Data = buffer.toString('base64');
 				const fileType = file.type;
 
-				// Determine resource type based on file type
 				const resourceType = fileType === 'application/pdf' || fileType.includes('document') ? ('auto' as const) : ('image' as const);
 
 				const dataURI = `data:${fileType};base64,${base64Data}`;
 
-				// Upload to Cloudinary with proper resource type
 				if (fileType === 'application/pdf') {
-					const cleanName = cleanFileName(file.name).replace(/\.pdf$/i, '') + '.pdf'; // Ensure .pdf extension
+					const cleanName = cleanFileName(file.name).replace(/\.pdf$/i, '') + '.pdf';
 
-					// Special handling for PDFs to enforce download
 					const result = await cloudinary.uploader.upload(dataURI, {
-						resource_type: 'raw', // Raw file type for non-image files
+						resource_type: 'raw',
 						folder: 'academiq',
-						public_id: `${Date.now()}-${cleanName}`, // Include .pdf in public_id
-						use_filename: true, // Preserve original filename
-						unique_filename: false, // Prevent random strings in filename
+						public_id: `${Date.now()}-${cleanName}`,
+						use_filename: true,
+						unique_filename: false,
 						flags: 'attachment',
 					});
 					materialUrls.push(result.secure_url);
 				} else {
-					// Handle other file types (images and documents)
 					const cleanName = cleanFileName(file.name).replace(/\.[^/.]+$/, '');
 
 					const result = await cloudinary.uploader.upload(dataURI, {
@@ -84,7 +77,6 @@ export async function POST(req: Request) {
 			}
 		}
 
-		// Create post in database
 		const post = await db.post.create({
 			data: {
 				title,

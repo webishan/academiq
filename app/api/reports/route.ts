@@ -38,7 +38,6 @@ export async function GET(request: Request) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		// Check if user is admin
 		const user = await db.user.findUnique({
 			where: { id: session.user.id },
 			select: { role: true },

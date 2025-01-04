@@ -9,7 +9,6 @@ export async function DELETE(request: Request, { params }: { params: { commentId
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		// Check if user is admin
 		const user = await db.user.findUnique({
 			where: { id: session.user.id },
 			select: { role: true },
@@ -19,7 +18,6 @@ export async function DELETE(request: Request, { params }: { params: { commentId
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 		}
 
-		// First, recursively delete all child comments
 		await deleteCommentAndChildren(params.commentId);
 
 		return NextResponse.json({ message: 'Comment deleted successfully' });
@@ -30,28 +28,23 @@ export async function DELETE(request: Request, { params }: { params: { commentId
 }
 
 async function deleteCommentAndChildren(commentId: string) {
-	// Get all child comments
 	const children = await db.comment.findMany({
 		where: { parentId: commentId },
 		select: { id: true },
 	});
 
-	// Recursively delete children
 	for (const child of children) {
 		await deleteCommentAndChildren(child.id);
 	}
 
-	// Delete the reports first
 	await db.report.deleteMany({
 		where: { commentId },
 	});
 
-	// Delete the votes using the correct model name
 	await db.commentVote.deleteMany({
 		where: { commentId },
 	});
 
-	// Finally delete the comment itself
 	await db.comment.delete({
 		where: { id: commentId },
 	});

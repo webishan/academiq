@@ -58,7 +58,6 @@ export async function PATCH(request: Request, { params }: { params: { userId: st
 
 		const data = await request.json();
 
-		// Prepare update data
 		const updateData: any = {
 			name: data.name,
 			department: data.department,
@@ -67,7 +66,6 @@ export async function PATCH(request: Request, { params }: { params: { userId: st
 			facultyPosition: data.facultyPosition,
 		};
 
-		// Handle password update if provided
 		if (data.currentPassword && data.newPassword) {
 			const user = await db.user.findUnique({
 				where: { id: params.userId },
@@ -100,22 +98,19 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
-		// Security check: Only allow deleting own account
 		if (session.user.id !== params.userId) {
 			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 		}
 
-		// Delete all related records first (due to foreign key constraints)
 		await db.$transaction([
-			// Delete all comments by the user
 			db.comment.deleteMany({
 				where: { userId: params.userId },
 			}),
-			// Delete all posts by the user
+
 			db.post.deleteMany({
 				where: { userId: params.userId },
 			}),
-			// Finally delete the user
+
 			db.user.delete({
 				where: { id: params.userId },
 			}),
