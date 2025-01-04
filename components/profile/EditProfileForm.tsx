@@ -38,7 +38,6 @@ const editProfileSchema = z
 		confirmNewPassword: z.string().optional(),
 	})
 	.superRefine((data, ctx) => {
-		// If any password field is filled, all password fields become required
 		if (data.currentPassword || data.newPassword || data.confirmNewPassword) {
 			if (!data.currentPassword) {
 				ctx.addIssue({

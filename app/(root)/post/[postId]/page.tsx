@@ -31,7 +31,7 @@ async function getPost(postId: string) {
 
 export default async function PostDetailPage({ params }: { params: { postId: string } }) {
 	const session = await auth();
-	const currentUserId = session?.user?.id;
+	// const currentUserId = session?.user?.id;
 	const post = await getPost(params.postId);
 
 	// console.log('💖', session?.user?.image);

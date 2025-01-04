@@ -1,10 +1,8 @@
 import { PostWithUser } from '@/types/types';
-import Link from 'next/link';
 import { PostHeader } from './post-card/PostHeader';
 import { PostActions } from './post-card/PostActions';
 import { Badge } from '../ui/badge';
-import { FaFileAlt, FaImage } from 'react-icons/fa';
-import Image from 'next/image';
+import { FaFileAlt } from 'react-icons/fa';
 
 interface PostCardProps {
 	post: PostWithUser;

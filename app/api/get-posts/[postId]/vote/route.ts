@@ -13,28 +13,22 @@ export async function POST(request: Request, { params }: { params: { postId: str
 		const userId = session.user.id;
 		const { value } = await request.json();
 
-		// Use a transaction to handle concurrent votes
 		const result = await db.$transaction(async (tx) => {
-			// Lock the user's vote record for update
 			const existingVote = await tx.postVote.findFirst({
 				where: {
 					postId: params.postId,
 					userId,
 				},
-				// Note: forUpdate might not be supported by all databases
-				// Remove if using a database that doesn't support it
 			});
 
 			if (existingVote) {
 				if (existingVote.value === value) {
-					// Remove vote if clicking the same button
 					await tx.postVote.delete({
 						where: {
 							id: existingVote.id,
 						},
 					});
 				} else {
-					// Update vote if changing vote type
 					await tx.postVote.update({
 						where: {
 							id: existingVote.id,
@@ -45,7 +39,6 @@ export async function POST(request: Request, { params }: { params: { postId: str
 					});
 				}
 			} else {
-				// Create new vote if none exists
 				await tx.postVote.create({
 					data: {
 						postId: params.postId,
@@ -55,7 +48,6 @@ export async function POST(request: Request, { params }: { params: { postId: str
 				});
 			}
 
-			// Get updated vote counts within the transaction
 			const upvotes = await tx.postVote.count({
 				where: {
 					postId: params.postId,

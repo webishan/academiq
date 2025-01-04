@@ -58,12 +58,11 @@ const signupUserSchema = z
 		path: ['confirmPassword'],
 	})
 	.superRefine((data, ctx) => {
-		// Validate email domain based on role
 		if (data.role === 'STUDENT' && !data.email.endsWith('@g.bracu.ac.bd')) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				message: 'Student email must end with @g.bracu.ac.bd',
-				path: ['email'], // Mark the issue on the email field
+				path: ['email'],
 			});
 		}
 
@@ -71,33 +70,31 @@ const signupUserSchema = z
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				message: 'Faculty email must end with @bracu.ac.bd',
-				path: ['email'], // Mark the issue on the email field
+				path: ['email'],
 			});
 		}
 
-		// Ensure student-specific fields are present
 		if (data.role === 'STUDENT' && !data.studentId?.trim()) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
 				message: 'Student ID is required for students',
-				path: ['studentId'], // Mark the issue on the studentId field
+				path: ['studentId'],
 			});
 		}
 
-		// Ensure faculty-specific fields are present
 		if (data.role === 'FACULTY') {
 			if (!data.facultyInitials?.trim()) {
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
 					message: 'Faculty initials are required for faculty',
-					path: ['facultyInitials'], // Mark the issue on the facultyInitials field
+					path: ['facultyInitials'],
 				});
 			}
 			if (!data.facultyPosition?.trim()) {
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
 					message: 'Faculty position is required for faculty',
-					path: ['facultyPosition'], // Mark the issue on the facultyPosition field
+					path: ['facultyPosition'],
 				});
 			}
 		}

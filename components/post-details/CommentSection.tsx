@@ -27,14 +27,11 @@ interface CommentSectionProps {
 
 const getTotalCommentCount = (comments: any[]) => {
 	return comments.reduce((total, comment) => {
-		// Add 1 for the parent comment
-		// Add the number of replies (children) if they exist
 		return total + 1 + (comment.children?.length || 0);
 	}, 0);
 };
 
 export default function CommentSection({ postId, currentUserId, currentUser }: CommentSectionProps) {
-	// console.log('CommentSection currentUser:', currentUser);
 	const [comments, setComments] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const { toast } = useToast();

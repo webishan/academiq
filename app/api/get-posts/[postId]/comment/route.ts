@@ -2,13 +2,12 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { auth } from '@/lib/auth';
 
-// Get all comments for a post
 export async function GET(request: Request, { params }: { params: { postId: string } }) {
 	try {
 		const comments = await db.comment.findMany({
 			where: {
 				postId: params.postId,
-				parentId: null, // Only get top-level comments
+				parentId: null,
 			},
 			include: {
 				user: {
@@ -60,7 +59,6 @@ export async function GET(request: Request, { params }: { params: { postId: stri
 	}
 }
 
-// Create a new comment
 export async function POST(request: Request, { params }: { params: { postId: string } }) {
 	try {
 		const session = await auth();

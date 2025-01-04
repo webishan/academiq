@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { FaLink, FaTwitter, FaFacebook, FaWhatsapp, FaLinkedin } from 'react-icons/fa';
+import { FaLink } from 'react-icons/fa';
 import { useToast } from '@/hooks/use-toast';
 
 interface ShareDialogProps {

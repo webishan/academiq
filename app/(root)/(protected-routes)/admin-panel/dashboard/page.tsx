@@ -8,7 +8,6 @@ const AdminDashboard = async () => {
 	const session = await auth();
 	if (!session?.user) redirect('/login');
 
-	// Check if user is admin
 	const user = await db.user.findUnique({
 		where: { id: session.user.id },
 		select: { role: true },
