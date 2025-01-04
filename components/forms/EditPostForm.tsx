@@ -102,7 +102,7 @@ export function EditPostForm({ post }: EditPostFormProps) {
 						<FormItem>
 							<FormLabel>Content</FormLabel>
 							<FormControl>
-								<Textarea {...field} />
+								<Textarea {...field} className="h-[300px]" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

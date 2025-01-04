@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const TrendingPosts = () => {
 	const [posts, setPosts] = useState<PostWithUser[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState(false);
 
 	useEffect(() => {
 		const fetchTrendingPosts = async () => {
@@ -21,6 +22,7 @@ const TrendingPosts = () => {
 				setPosts(data);
 			} catch (error) {
 				console.error('Error fetching trending posts:', error);
+				setError(true);
 			} finally {
 				setIsLoading(false);
 			}
@@ -54,6 +56,38 @@ const TrendingPosts = () => {
 		);
 	}
 
+	if (error) {
+		return (
+			<aside className="fixed top-16 right-0 h-[calc(100vh-4rem)] w-64 bg-background border-l border-border p-4">
+				<div className="pb-4 border-b">
+					<div className="flex items-center gap-2">
+						<FaFire className="text-orange-500" />
+						<h2 className="font-semibold text-lg">Trending Posts</h2>
+					</div>
+				</div>
+				<div className="flex items-center justify-center h-40">
+					<p className="text-sm text-muted-foreground">Error loading trending posts</p>
+				</div>
+			</aside>
+		);
+	}
+
+	if (posts.length === 0) {
+		return (
+			<aside className="fixed top-16 right-0 h-[calc(100vh-4rem)] w-64 bg-background border-l border-border p-4">
+				<div className="pb-4 border-b">
+					<div className="flex items-center gap-2">
+						<FaFire className="text-orange-500" />
+						<h2 className="font-semibold text-lg">Trending Posts</h2>
+					</div>
+				</div>
+				<div className="flex items-center justify-center h-40">
+					<p className="text-sm text-muted-foreground">No trending posts found</p>
+				</div>
+			</aside>
+		);
+	}
+
 	return (
 		<aside className="fixed top-16 right-0 h-[calc(100vh-4rem)] w-64 bg-background border-l border-border p-4 flex flex-col gap-4 overflow-y-auto">
 			<div className="pb-4 border-b">
@@ -72,9 +106,6 @@ const TrendingPosts = () => {
 							</Badge>
 							<h3 className="font-medium text-sm line-clamp-2 mb-2">{post.title}</h3>
 							<div className="flex items-center gap-2 text-xs text-muted-foreground">
-								{/* <FaUser className="h-3 w-3" />
-								<span>{post.user.name}</span>
-								<span>•</span> */}
 								<span>{formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}</span>
 							</div>
 						</div>
