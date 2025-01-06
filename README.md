@@ -3,6 +3,10 @@
 
 ## Contribution Information
 
+This project is a collaborative effort originally created by [Ahsanul Islam](https://github.com/islam-ahsanul).  
+The original repository can be found [here](https://github.com/islam-ahsanul/academiq).
+
+I contributed as part of a team to develop this project. This fork is maintained as a reference for my contributions.
 
 
 ## Getting Started
