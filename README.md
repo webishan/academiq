@@ -1,12 +1,9 @@
+
 # Academiq
 
-This project is a collaborative effort originally created by [Ahsanul Islam](https://github.com/islam-ahsanul).  
-The original repository can be found [here](https://github.com/islam-ahsanul/academiq).
-
-I contributed as part of a team to develop this project. This fork is maintained as a reference for my contributions.
+## Contribution Information
 
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
